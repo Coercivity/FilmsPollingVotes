@@ -5,6 +5,7 @@ using Polling.Application.Contracts;
 using Polling.Domain.Entities;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 
 
@@ -27,7 +28,7 @@ namespace Polling.API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<PositionModel>>> GetPositionsAsync(Guid id)
+        public async Task<ActionResult<IEnumerable<PositionModel>>> GetPositionsAsync([Required] Guid id)
         {
             var positions = await _pollingRepository.GetPositionsByMeetingIdAsync(id);
 
@@ -37,14 +38,14 @@ namespace Polling.API.Controllers
             }
 
 
-            return Ok(_mapper.Map<PositionModel>(positions));
+            return Ok(_mapper.Map<IEnumerable<EntityPosition>, IEnumerable<PositionModel>>(positions));
         }
             
 
 
         [HttpGet]
         [Route("{id}")]
-        public async Task<ActionResult<PositionModel>> GetPositionAsync(Guid id)
+        public async Task<ActionResult<PositionModel>> GetPositionAsync([Required] Guid id)
         {
             var position = await _pollingRepository.GetPositionByIdAsync(id);
 
@@ -53,7 +54,7 @@ namespace Polling.API.Controllers
                 return NotFound();
             }
 
-            return Ok(_mapper.Map<PositionModel>(position));
+            return Ok(_mapper.Map<EntityPosition, PositionModel>(position));
         }
 
 
@@ -62,9 +63,8 @@ namespace Polling.API.Controllers
         public async Task<ActionResult<PositionModel>> Post(CreatePositionModel createModel)
         {
 
-            var weight = await _weightCalculator.CalculateWeightByUserAndMeetingIdAsync
-                                            (createModel.CreatorId, createModel.MeetingId);
-
+            //var weight = await _weightCalculator.CalculateWeightByUserAndMeetingIdAsync(createModel.CreatorId, createModel.MeetingId);
+            var weight = 1;
             var newEntityPosition = new EntityPosition()
             {
                 CreatorId = createModel.CreatorId,
@@ -73,14 +73,16 @@ namespace Polling.API.Controllers
                 Weight = weight
             };
 
+            await _pollingRepository.CreatePositionAsync(newEntityPosition);
+
             return CreatedAtAction(nameof(GetPositionAsync), new { id = newEntityPosition.Id }, 
-                                    _mapper.Map<PositionModel>(newEntityPosition));
+                                    _mapper.Map<EntityPosition, PositionModel>(newEntityPosition));
         }
 
 
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult> DeletePositionAsync(Guid id)
+        public async Task<ActionResult> DeletePositionAsync([Required] Guid id)
         {
             var position = await _pollingRepository.GetPositionByIdAsync(id);
 

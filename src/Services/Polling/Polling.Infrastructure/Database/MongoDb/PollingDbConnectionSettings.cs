@@ -13,7 +13,8 @@ namespace Polling.Infrastructure.Database.MongoDb
         {
             get
             {
-                return $"mongodb://{User}:{Password}@{Host}:{Port}";
+                return $"mongodb+srv://{User}:{Password}@{Host}";
+                //return $"mongodb+srv://{User}:{Password}@{Host}:{Port}";
             }
 
         }
