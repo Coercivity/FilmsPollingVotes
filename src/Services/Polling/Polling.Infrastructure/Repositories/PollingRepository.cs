@@ -24,9 +24,18 @@ namespace Polling.Infrastructure.Repositories
         }
 
 
-        public async Task CreatePositionAsync(EntityPosition position)
+        public async Task CreatePositionAsync(EntityPosition newPosition)
         {
-            await _entitiesCollection.InsertOneAsync(position);
+            var filter = _filterBuilder.Eq(position => position.EntityId, newPosition.EntityId)
+                         & _filterBuilder.Eq(position => position.MeetingId, newPosition.MeetingId);
+
+            var existingPosition = await _entitiesCollection.Find(filter).FirstOrDefaultAsync();
+
+            if(existingPosition is null)
+            {
+                await _entitiesCollection.InsertOneAsync(newPosition);
+            }
+            
         }
 
 

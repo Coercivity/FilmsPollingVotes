@@ -12,8 +12,8 @@ namespace Polling.Application.Contracts
         Task<IEnumerable<EntityPosition>> GetPositionsByMeetingIdAsync(Guid id);
         Task DeletePositionAsync(EntityPosition position);
         Task<IEnumerable<EntityPosition>> GetPositionsByMeetingAndCreatorIdAsync(Guid userId, Guid meetingId);
-
         Task UpdateWeightsAsync(IEnumerable<EntityPosition> positions);
+
 
 
 
