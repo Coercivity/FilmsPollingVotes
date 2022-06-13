@@ -10,7 +10,7 @@ namespace Polling.API.Dtos
         [Required]
         public Guid CreatorId { get; init; }
         [Required]
-        public Guid Entityid { get; set; }
+        public Guid EntityId { get; set; }
         [Required]
         public float CreatorWeight { get; set; }
     }

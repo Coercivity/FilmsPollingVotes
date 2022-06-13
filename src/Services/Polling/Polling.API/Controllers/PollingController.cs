@@ -69,7 +69,7 @@ namespace Polling.API.Controllers
             {
                 CreatorId = createModel.CreatorId,
                 MeetingId = createModel.MeetingId,
-                EntityId = createModel.Entityid,
+                EntityId = createModel.EntityId,
                 CreatorWeight = createModel.CreatorWeight,
                 Id = Guid.NewGuid(),
                 Weight = createModel.CreatorWeight   //base weight - wip

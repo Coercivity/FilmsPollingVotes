@@ -23,8 +23,10 @@ namespace Polling.Application.Behaviour
             var positions = (List<EntityPosition>)await _pollingRepository
                                     .GetPositionsByMeetingAndCreatorIdAsync(userId, meetingId);
 
-            await UpdateWeightsAsync(positions, creatorWeight);
-
+            if (positions is not null)
+            {
+                await UpdateWeightsAsync(positions, creatorWeight);
+            }
         }
 
 
@@ -36,6 +38,7 @@ namespace Polling.Application.Behaviour
 
             foreach (var position in positions)
             {
+                position.CreatorWeight = creatorWeight;
                 position.Weight = creatorWeight / totalPositions;
             }
 

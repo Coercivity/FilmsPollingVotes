@@ -57,7 +57,7 @@ namespace Polling.Infrastructure.Repositories
         public async Task<IEnumerable<EntityPosition>> GetPositionsByMeetingAndCreatorIdAsync(Guid userId, Guid meetingId)
         {
             var filter = _filterBuilder.Eq(position => position.MeetingId, meetingId) 
-                        | _filterBuilder.Eq(position => position.CreatorId, userId);
+                        & _filterBuilder.Eq(position => position.CreatorId, userId);
             var positions = await _entitiesCollection.Find(filter).ToListAsync();
 
             return positions.Count == 0 ? null : positions;

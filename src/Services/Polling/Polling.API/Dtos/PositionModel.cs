@@ -5,7 +5,7 @@ namespace Polling.API.Dtos
     public record PositionModel
     {
         public Guid Id { get; init; }
-        public Guid Entityid { get; set; }
+        public Guid EntityId { get; set; }
         public Guid MeetingId { get; init; }
         public Guid CreatorId { get; init; }
 
