@@ -15,11 +15,11 @@ namespace Polling.API.Controllers
     [ApiController]
     public class PollingController : ControllerBase
     {
-        private readonly IWeightCalculator _weightCalculator;
+        private readonly IVoteWeightCalculator _weightCalculator;
         private readonly IPollingRepository _pollingRepository;
         private readonly IMapper _mapper;
 
-        public PollingController(IPollingRepository pollingRepository, IWeightCalculator weightCalculator,
+        public PollingController(IPollingRepository pollingRepository, IVoteWeightCalculator weightCalculator,
                                  IMapper mapper)
         {
             _pollingRepository = pollingRepository;
@@ -63,19 +63,24 @@ namespace Polling.API.Controllers
         public async Task<ActionResult<PositionModel>> Post(CreatePositionModel createModel)
         {
 
-            //var weight = await _weightCalculator.CalculateWeightByUserAndMeetingIdAsync(createModel.CreatorId, createModel.MeetingId);
-            var weight = 1;
+
+
             var newEntityPosition = new EntityPosition()
             {
                 CreatorId = createModel.CreatorId,
                 MeetingId = createModel.MeetingId,
+                EntityId = createModel.Entityid,
+                CreatorWeight = createModel.CreatorWeight,
                 Id = Guid.NewGuid(),
-                Weight = weight
+                Weight = createModel.CreatorWeight   //base weight - wip
             };
 
             await _pollingRepository.CreatePositionAsync(newEntityPosition);
+            await _weightCalculator.CalculateWeightsByUserAndMeetingIdAsync(createModel.CreatorId, createModel.MeetingId, 
+                                                                                                createModel.CreatorWeight);
 
-            return CreatedAtAction(nameof(GetPositionAsync), new { id = newEntityPosition.Id }, 
+
+            return CreatedAtAction(nameof(GetPositionAsync), new { id = newEntityPosition.EntityId }, 
                                     _mapper.Map<EntityPosition, PositionModel>(newEntityPosition));
         }
 

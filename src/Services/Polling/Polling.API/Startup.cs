@@ -40,7 +40,7 @@ namespace Polling.API
 
                 
             services.AddSingleton<IPollingRepository, PollingRepository>();
-            services.AddSingleton<IWeightCalculator, WeightCalculator>();
+            services.AddSingleton<IVoteWeightCalculator, VoteWeightCalculator>();
 
             services.AddAutoMapper(typeof(Startup));
             

@@ -7,11 +7,15 @@ namespace Polling.Application.Contracts
 {
     public interface IPollingRepository
     {
-        Task CreatePositionAsync(EntityPosition entity);
+        Task CreatePositionAsync(EntityPosition position);
         Task<EntityPosition> GetPositionByIdAsync(Guid id);
         Task<IEnumerable<EntityPosition>> GetPositionsByMeetingIdAsync(Guid id);
-        Task DeletePositionAsync(EntityPosition entityPosition);
-       
+        Task DeletePositionAsync(EntityPosition position);
+        Task<IEnumerable<EntityPosition>> GetPositionsByMeetingAndCreatorIdAsync(Guid userId, Guid meetingId);
+
+        Task UpdateWeightsAsync(IEnumerable<EntityPosition> positions);
+
+
 
     }
 }

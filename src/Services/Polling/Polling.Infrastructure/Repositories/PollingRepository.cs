@@ -15,6 +15,7 @@ namespace Polling.Infrastructure.Repositories
         private readonly IMongoCollection<EntityPosition> _entitiesCollection;
         private readonly FilterDefinitionBuilder<EntityPosition> _filterBuilder = Builders<EntityPosition>.Filter;
 
+
         public PollingRepository(PollingDbConnectionSettings dbCredentials)
         {
             var mongoClient = new MongoClient(dbCredentials.ConnectionString);
@@ -22,10 +23,12 @@ namespace Polling.Infrastructure.Repositories
             _entitiesCollection = db.GetCollection<EntityPosition>(dbCredentials.PollingCollectionName);
         }
 
+
         public async Task CreatePositionAsync(EntityPosition position)
         {
             await _entitiesCollection.InsertOneAsync(position);
         }
+
 
         public async Task DeletePositionAsync(EntityPosition entityPosition)
         {
@@ -33,20 +36,41 @@ namespace Polling.Infrastructure.Repositories
             await _entitiesCollection.DeleteOneAsync(filter);
 
         }
+
+
         public async Task<EntityPosition> GetPositionByIdAsync(Guid id)
         {
-            var filter = _filterBuilder.Eq(position => position.Id, id);
+            var filter = _filterBuilder.Eq(position => position.EntityId, id);
             return await _entitiesCollection.Find(filter).FirstOrDefaultAsync();
         }
+
 
         public async Task<IEnumerable<EntityPosition>> GetPositionsByMeetingIdAsync(Guid id)
         {
             var filter = _filterBuilder.Eq(position => position.MeetingId, id);
             var positions = await _entitiesCollection.Find(filter).ToListAsync();
 
+            return positions.Count == 0 ? null : positions;
+        }
 
+
+        public async Task<IEnumerable<EntityPosition>> GetPositionsByMeetingAndCreatorIdAsync(Guid userId, Guid meetingId)
+        {
+            var filter = _filterBuilder.Eq(position => position.MeetingId, meetingId) 
+                        | _filterBuilder.Eq(position => position.CreatorId, userId);
+            var positions = await _entitiesCollection.Find(filter).ToListAsync();
 
             return positions.Count == 0 ? null : positions;
+        }
+
+        public async Task UpdateWeightsAsync(IEnumerable<EntityPosition> positions)
+        {
+
+            foreach (var position in positions)
+            {
+                var filter = _filterBuilder.Eq(position => position.Id, position.Id);
+                await _entitiesCollection.ReplaceOneAsync(filter, position);
+            }
         }
     }
 }

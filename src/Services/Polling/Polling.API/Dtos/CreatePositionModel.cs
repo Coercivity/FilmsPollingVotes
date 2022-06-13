@@ -9,5 +9,9 @@ namespace Polling.API.Dtos
         public Guid MeetingId { get; init; }
         [Required]
         public Guid CreatorId { get; init; }
+        [Required]
+        public Guid Entityid { get; set; }
+        [Required]
+        public float CreatorWeight { get; set; }
     }
 }
