@@ -17,14 +17,17 @@ namespace Polling.API.Controllers
     {
         private readonly IVoteWeightCalculator _weightCalculator;
         private readonly IPollingRepository _pollingRepository;
+        private readonly IEntityPositionPicker _entityPositionPicker;
         private readonly IMapper _mapper;
+        
 
         public PollingController(IPollingRepository pollingRepository, IVoteWeightCalculator weightCalculator,
-                                 IMapper mapper)
+                                 IMapper mapper, IEntityPositionPicker entityPositionPicker)
         {
             _pollingRepository = pollingRepository;
             _weightCalculator = weightCalculator;
             _mapper = mapper;
+            _entityPositionPicker = entityPositionPicker;
         }
 
         [HttpGet]
@@ -58,12 +61,29 @@ namespace Polling.API.Controllers
         }
 
 
+        [HttpGet]
+        [Route("winner")]
+        public async Task<ActionResult<Guid>> PickWinnerAsync([Required] Guid meetingId)
+        {
+            var positions = await _pollingRepository.GetPositionsByMeetingIdAsync(meetingId);
+
+            if(positions is null)
+            {
+                return NotFound();
+            }
+
+            var winnerId = await _entityPositionPicker.PickPositionAsync(meetingId);
+            
+            return Ok(winnerId);
+        }
+
+
+
+
 
         [HttpPost]
         public async Task<ActionResult<PositionModel>> Post(CreatePositionModel createModel)
         {
-
-
 
             var newEntityPosition = new EntityPosition()
             {
@@ -72,7 +92,7 @@ namespace Polling.API.Controllers
                 EntityId = createModel.EntityId,
                 CreatorWeight = createModel.CreatorWeight,
                 Id = Guid.NewGuid(),
-                Weight = createModel.CreatorWeight   //base weight - wip
+                Weight = createModel.CreatorWeight   
             };
 
             await _pollingRepository.CreatePositionAsync(newEntityPosition);
@@ -86,10 +106,10 @@ namespace Polling.API.Controllers
 
 
 
-        [HttpDelete("{id}")]
-        public async Task<ActionResult> DeletePositionAsync([Required] Guid id)
+        [HttpDelete("{entityId}")]
+        public async Task<ActionResult> DeletePositionAsync([Required] Guid entityId)
         {
-            var position = await _pollingRepository.GetPositionByIdAsync(id);
+            var position = await _pollingRepository.GetPositionByIdAsync(entityId);
 
             if(position is null)
             {
@@ -97,6 +117,8 @@ namespace Polling.API.Controllers
             }
 
             await _pollingRepository.DeletePositionAsync(position);
+            await _weightCalculator.CalculateWeightsByUserAndMeetingIdAsync(position.CreatorId, position.MeetingId,
+                                                                                    position.CreatorWeight);
 
             return NoContent();
         }

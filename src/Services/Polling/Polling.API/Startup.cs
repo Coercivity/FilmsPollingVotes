@@ -11,7 +11,6 @@ using Polling.Application.Behaviour;
 using Polling.Application.Contracts;
 using Polling.Infrastructure.Database.MongoDb;
 using Polling.Infrastructure.Repositories;
-using AutoMapper;
 
 namespace Polling.API
 {
@@ -41,6 +40,7 @@ namespace Polling.API
                 
             services.AddSingleton<IPollingRepository, PollingRepository>();
             services.AddSingleton<IVoteWeightCalculator, VoteWeightCalculator>();
+            services.AddTransient<IEntityPositionPicker, EntityPositionPicker>();
 
             services.AddAutoMapper(typeof(Startup));
             
