@@ -11,6 +11,7 @@ using Polling.Application.Behaviour;
 using Polling.Application.Contracts;
 using Polling.Infrastructure.Database.MongoDb;
 using Polling.Infrastructure.Repositories;
+using System;
 
 namespace Polling.API
 {
@@ -30,14 +31,18 @@ namespace Polling.API
             BsonSerializer.RegisterSerializer(new GuidSerializer(BsonType.String));
 
 
+            var mongodbSettings = Configuration.GetSection(nameof(PollingDbConnectionSettings))
+                            .Get<PollingDbConnectionSettings>();
+
             services.AddSingleton<PollingDbConnectionSettings>(serviceProvider =>
             {
-                var settings = Configuration.GetSection(nameof(PollingDbConnectionSettings))
-                                            .Get<PollingDbConnectionSettings>();
-                return settings;
+                return mongodbSettings;
             });
 
+            services.AddHealthChecks().AddMongoDb(mongodbSettings.ConnectionString, name: "mongodb", 
+                                                   timeout: TimeSpan.FromSeconds(3));
                 
+
             services.AddSingleton<IPollingRepository, PollingRepository>();
             services.AddSingleton<IVoteWeightCalculator, VoteWeightCalculator>();
             services.AddTransient<IEntityPositionPicker, EntityPositionPicker>();
@@ -50,6 +55,11 @@ namespace Polling.API
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Polling.API", Version = "v1" });
             });
+
+
+            
+
+
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -62,7 +72,7 @@ namespace Polling.API
             }
 
             app.UseHttpsRedirection();
-
+                
             app.UseRouting();
 
             app.UseAuthorization();
@@ -70,6 +80,7 @@ namespace Polling.API
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHealthChecks("/health");
             });
         }
     }
