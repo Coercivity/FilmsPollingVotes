@@ -28,20 +28,9 @@ namespace Polling.Tests
         [Fact]
         public void MongoBookDBContext_Constructor_Success()
         {
-            var settings = new PollingDbConnectionSettings()
-            {
-                ConnectionString = "mongodb://tes123 ",
-                DatabaseName = "TestDB",
-                PollingCollectionName = "TestCollection"
-            };
 
 
 
-            //Act 
-            var context = new PollingRepository(settings);
-
-            //Assert 
-            Assert.NotNull(context);
         }
 
 

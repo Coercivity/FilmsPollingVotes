@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Polling.API.Dtos;
 using Polling.Application.Contracts;
 using Polling.Domain.Entities;
@@ -19,27 +20,31 @@ namespace Polling.API.Controllers
         private readonly IPollingRepository _pollingRepository;
         private readonly IEntityPositionPicker _entityPositionPicker;
         private readonly IMapper _mapper;
+        private readonly ILogger<PollingController> _logger;
         
 
         public PollingController(IPollingRepository pollingRepository, IVoteWeightCalculator weightCalculator,
-                                 IMapper mapper, IEntityPositionPicker entityPositionPicker)
+                                 IMapper mapper, IEntityPositionPicker entityPositionPicker, ILogger<PollingController> logger)
         {
             _pollingRepository = pollingRepository;
             _weightCalculator = weightCalculator;
             _mapper = mapper;
             _entityPositionPicker = entityPositionPicker;
+            _logger = logger;
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<PositionModel>>> GetPositionsAsync([Required] Guid id)
+        [Route("positions/{meetingId}")]
+        public async Task<ActionResult<IEnumerable<PositionModel>>> GetPositionsAsync([Required] Guid meetingId)
         {
-            var positions = await _pollingRepository.GetPositionsByMeetingIdAsync(id);
+            var positions = await _pollingRepository.GetPositionsByMeetingIdAsync(meetingId);
 
-            if(positions is null)
+            if (positions is null)
             {
                 return NotFound();
             }
 
+            _logger.LogInformation($"{DateTime.UtcNow.ToString("hh:mm:ss")}: Get positions by meeting");
 
             return Ok(_mapper.Map<IEnumerable<EntityPosition>, IEnumerable<PositionModel>>(positions));
         }
@@ -47,22 +52,24 @@ namespace Polling.API.Controllers
 
 
         [HttpGet]
-        [Route("{id}")]
-        public async Task<ActionResult<PositionModel>> GetPositionAsync([Required] Guid id)
+        [Route("{positionId}")]
+        public async Task<ActionResult<PositionModel>> GetPositionAsync([Required] Guid positionId)
         {
-            var position = await _pollingRepository.GetPositionByIdAsync(id);
+            var position = await _pollingRepository.GetPositionByIdAsync(positionId);
 
             if(position is null)
             {
                 return NotFound();
             }
 
+            _logger.LogInformation($"{DateTime.UtcNow.ToString("hh:mm:ss")}: Get position by id");
+
             return Ok(_mapper.Map<EntityPosition, PositionModel>(position));
         }
 
 
         [HttpGet]
-        [Route("winner")]
+        [Route("winner/{meetingId}")]
         public async Task<ActionResult<Guid>> PickWinnerAsync([Required] Guid meetingId)
         {
             var positions = await _pollingRepository.GetPositionsByMeetingIdAsync(meetingId);
@@ -73,11 +80,11 @@ namespace Polling.API.Controllers
             }
 
             var winnerId = await _entityPositionPicker.PickPositionAsync(meetingId);
-            
+
+            _logger.LogInformation($"{DateTime.UtcNow.ToString("hh:mm:ss")}: Get winner");
+
             return Ok(winnerId);
         }
-
-
 
 
 
@@ -99,6 +106,7 @@ namespace Polling.API.Controllers
             await _weightCalculator.CalculateWeightsByUserAndMeetingIdAsync(createModel.CreatorId, createModel.MeetingId, 
                                                                                                 createModel.CreatorWeight);
 
+            _logger.LogInformation($"{DateTime.UtcNow.ToString("hh:mm:ss")}: Add new position with {createModel.MeetingId} meeting id");
 
             return CreatedAtAction(nameof(GetPositionAsync), new { id = newEntityPosition.EntityId }, 
                                     _mapper.Map<EntityPosition, PositionModel>(newEntityPosition));
