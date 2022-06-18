@@ -1,0 +1,26 @@
+﻿@model Film
+
+<h1>TEST LOBBY</h1>
+
+
+
+<form asp-action="create" asp-controller="home">
+    <p>
+        <label asp-for="Link">Ссылка</label><br />
+        <input type="text" asp-for="Link" />
+    </p>
+    <p>
+        <input type="hidden" type="text" asp-for="CreatorId" />
+    </p>
+    <p>
+        <input type="submit" value="Отправить" />
+    </p>
+</form>
+
+
+
+@section Scripts{
+
+    <script src="~/lib/microsoft/signalr/dist/browser/signalr.js"></script>
+    <script src="~/js/meeting.js"></script>
+}

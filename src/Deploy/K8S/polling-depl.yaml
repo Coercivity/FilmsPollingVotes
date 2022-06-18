@@ -1,0 +1,24 @@
+apiVersion : apps/v1
+kind: Deployment
+metadata:
+  name: polling-depl
+spec: 
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pollingapitest
+  template:
+    metadata:
+      labels:
+        app: pollingapitest
+    spec:
+      containers:
+        - name: testik
+          image: pollingapi
+
+          ports: 
+            - name: pollingapitest
+              protocol: TCP
+              port: 8080
+              targetPort: 8080
+

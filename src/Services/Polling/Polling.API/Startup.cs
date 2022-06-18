@@ -39,8 +39,7 @@ namespace Polling.API
                 return mongodbSettings;
             });
 
-            services.AddHealthChecks().AddMongoDb(mongodbSettings.ConnectionString, name: "mongodb", 
-                                                   timeout: TimeSpan.FromSeconds(3));
+
                 
 
             services.AddSingleton<IPollingRepository, PollingRepository>();
@@ -70,6 +69,9 @@ namespace Polling.API
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Polling.API v1"));
             }
+            else { 
+                
+            }
 
             app.UseHttpsRedirection();
                 
@@ -80,7 +82,6 @@ namespace Polling.API
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
-                endpoints.MapHealthChecks("/health");
             });
         }
     }
