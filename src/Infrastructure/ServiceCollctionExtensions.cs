@@ -14,7 +14,7 @@ namespace Infrastructure
 
 
             services.AddTransient<IMeetingRepository, MeetingRepository>();
-            services.AddSingleton<IFilmRepository, FilmRepository>();
+            services.AddTransient<IFilmRepository, FilmRepository>();
 
 
 

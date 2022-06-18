@@ -36,7 +36,7 @@ namespace Infrastructure
             {
                 entity.ToTable("Film");
 
-                entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.Property(e => e.KinopoiskId).ValueGeneratedNever();
 
                 entity.Property(e => e.Genre)
                     .HasMaxLength(50)

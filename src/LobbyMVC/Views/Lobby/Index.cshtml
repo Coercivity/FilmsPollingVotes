@@ -1,21 +1,32 @@
 ﻿@model Film
 
+
 <h1>TEST LOBBY</h1>
 
 
 
-<form asp-action="create" asp-controller="home">
+<form asp-action="create" asp-controller="lobby">
     <p>
-        <label asp-for="Link">Ссылка</label><br />
-        <input type="text" asp-for="Link" />
+        <label>Ссылка</label><br />
+        <input type="text" name="link" />
     </p>
-    <p>
-        <input type="hidden" type="text" asp-for="CreatorId" />
-    </p>
+
     <p>
         <input type="submit" value="Отправить" />
     </p>
 </form>
+
+<div>
+    <span>
+        @if(@Model is not null)
+        {
+            @Model.Description
+            
+        }
+    </span>
+</div>
+
+
 
 
 

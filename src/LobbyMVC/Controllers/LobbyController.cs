@@ -1,75 +1,37 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Application.Contracts;
+using Domain.Entities;
+using LobbyMVC.Dtos;
+using LobbyMVC.KinopoiskDataService;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace LobbyMVC.Controllers
 {
     public class LobbyController : Controller
     {
+        private readonly IMeetingRepository _meetingRepository;
+        private readonly IKinopoiskDataClient _kinopoiskDataClient;
+
+        public LobbyController(IMeetingRepository meetingRepository, IKinopoiskDataClient kinopoiskDataClient)
+        {
+            _meetingRepository = meetingRepository;
+            _kinopoiskDataClient = kinopoiskDataClient;
+        }
+
         public ActionResult Index()
         {
             return View();
         }
 
-        public ActionResult Details(int id)
+
+        public async Task<ActionResult> Create(string link)
         {
-            return View();
+            var film = await _kinopoiskDataClient.GetFilmAttributes(link);
+
+            return View("index", film);
         }
 
-        public ActionResult Create()
-        {
-            return View();
-        }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
     }
 }
