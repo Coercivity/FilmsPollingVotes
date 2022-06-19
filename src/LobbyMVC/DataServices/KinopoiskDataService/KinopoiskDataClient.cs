@@ -13,50 +13,43 @@ namespace LobbyMVC.KinopoiskDataService
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly IConfiguration _configuration;
 
-        private string _url;
+        private string _urlFilmPrefix;
         private readonly string _urlParameters;
         private readonly string _token;
-        private Film _film;
 
         public KinopoiskDataClient(IHttpClientFactory httpClientFactory, IConfiguration configuration)
         {
             _httpClientFactory = httpClientFactory;
             _configuration = configuration;
 
-            _url = _configuration.GetSection("KinopoiskAPISettings:url").Value;
+            _urlFilmPrefix = _configuration.GetSection("KinopoiskAPISettings:url").Value;
             _urlParameters = _configuration.GetSection("KinopoiskAPISettings:urlParameters").Value;
             _token = _configuration.GetSection("KinopoiskAPISettings:token").Value;
         }
 
         public  async Task<Film> GetFilmAttributes(string link)
         {
-            _url += link;
-
+            var url = _urlFilmPrefix + link;
 
             var httpClient = _httpClientFactory.CreateClient();
-            httpClient.BaseAddress = new Uri(_url);
+
+            httpClient.BaseAddress = new Uri(url);
 
 
             httpClient.DefaultRequestHeaders.Add("X-API-KEY", _urlParameters);
-            httpClient.DefaultRequestHeaders.Authorization
-                         = new AuthenticationHeaderValue("Bearer", _token);
+            httpClient.DefaultRequestHeaders.Add("Bearer", _token);
             httpClient.DefaultRequestHeaders.Accept.Add(
-                          new MediaTypeWithQualityHeaderValue("application/json"));
+                     new MediaTypeWithQualityHeaderValue("application/json"));
 
 
-            var response =  httpClient.GetAsync(_url).Result;
-
-            
+            var response = await httpClient.GetAsync(url);
 
             if (response.IsSuccessStatusCode)
             {
-                _film = response.Content.ReadAsAsync<Film>().Result;
-                return _film;
+                var film = response.Content.ReadAsAsync<Film>().Result;
+                return film;
             }
-            else
-            {
-                Console.WriteLine("{0} ({1})", (int)response.StatusCode, response.ReasonPhrase);
-            }
+
 
             return null;
 

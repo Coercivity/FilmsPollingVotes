@@ -32,7 +32,6 @@ namespace LobbyMVC
 
             services.AddHttpClient();
 
-
             services.AddSingleton<IKinopoiskDataClient, KinopoiskDataClient>();
 
 
