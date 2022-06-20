@@ -71,16 +71,8 @@ namespace LobbyMVC.FilmPollingDataService
 
         public async Task RemoveFilmByIdAsync(Guid id, Guid lobbyId)
         {
-            
-          var httpContent = new StringContent(
-                JsonSerializer.Serialize(
-                    new {id = id, meetingId = lobbyId }),
-                Encoding.UTF8,
-                "application/json");
-
             var response = await _httpClient.DeleteAsync(_httpClient.BaseAddress.ToString() 
                                                   + $"{lobbyId.ToString()}/{id.ToString()}");
-
 
             response.EnsureSuccessStatusCode();
         }

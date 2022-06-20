@@ -12,11 +12,8 @@ namespace Domain.Entities
         public Guid CreatorId { get; set; }
         public string Name { get; set; }
         public string Genre { get; set; }
-        public int KinopoiskId { get; set; }
-        public string Description { get; set; }
-        public string ShortDescription { get; set; }
+        public string Link { get; set; }
         public float Weight { get; set; }
-
 
     }
 

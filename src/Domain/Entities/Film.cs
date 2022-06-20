@@ -2,7 +2,11 @@
 {
     public class Film : EntertainmentEntity
     {
-        public string Link{ get; set; }
+        public int KinopoiskId { get; set; }
+        public string ShortDescription { get; set; }
+        public string Description { get; set; }
+
+
     }
 
 }
