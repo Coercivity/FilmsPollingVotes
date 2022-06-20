@@ -55,14 +55,34 @@ namespace LobbyMVC.FilmPollingDataService
             return null;
         }
 
-        public Task<Guid> GetWinnerByLobbyIdAsync(Guid id)
+        public async Task<Guid> GetWinnerByLobbyIdAsync(Guid id)
         {
-            throw new NotImplementedException();
+            var url = _urlWinnerPrefix + id.ToString();
+
+            var response = await _httpClient.GetAsync(url);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return response.Content.ReadAsAsync<Guid>().Result;
+            }
+
+            return Guid.Empty;
         }
 
-        public Task RemoveFilmByIdAsync(Guid id, Guid lobbyId)
+        public async Task RemoveFilmByIdAsync(Guid id, Guid lobbyId)
         {
-            throw new NotImplementedException();
+            
+          var httpContent = new StringContent(
+                JsonSerializer.Serialize(
+                    new {id = id, meetingId = lobbyId }),
+                Encoding.UTF8,
+                "application/json");
+
+            var response = await _httpClient.DeleteAsync(_httpClient.BaseAddress.ToString() 
+                                                  + $"{lobbyId.ToString()}/{id.ToString()}");
+
+
+            response.EnsureSuccessStatusCode();
         }
     }
 }

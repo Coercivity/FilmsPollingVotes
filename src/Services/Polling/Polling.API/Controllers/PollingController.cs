@@ -114,8 +114,8 @@ namespace Polling.API.Controllers
 
 
 
-        [HttpDelete("{entityId}")]
-        public async Task<ActionResult> DeletePositionAsync([Required] Guid entityId, [Required] Guid meetingId)
+        [HttpDelete("{meetingId}/{entityId}")]
+        public async Task<ActionResult> DeletePositionAsync([Required] Guid meetingId, [Required] Guid entityId)
         {
             var position = await _pollingRepository.GetPositionByMeetingAndEntityIdAsync(entityId, meetingId);
 
