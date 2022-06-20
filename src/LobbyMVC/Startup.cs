@@ -1,6 +1,6 @@
 using Infrastructure;
+using LobbyMVC.Extensions;
 using LobbyMVC.Hubs;
-using LobbyMVC.KinopoiskDataService;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -30,9 +30,8 @@ namespace LobbyMVC
 
             services.AddDbRepositories(Configuration.GetConnectionString("DefaultConnection"));
 
-            services.AddHttpClient();
+            services.AddHttpClients(Configuration);
 
-            services.AddSingleton<IKinopoiskDataClient, KinopoiskDataClient>();
 
 
 

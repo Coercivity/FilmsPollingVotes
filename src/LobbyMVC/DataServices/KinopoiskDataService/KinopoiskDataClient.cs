@@ -10,39 +10,19 @@ namespace LobbyMVC.KinopoiskDataService
 
     public class KinopoiskDataClient : IKinopoiskDataClient
     {
-        private readonly IHttpClientFactory _httpClientFactory;
-        private readonly IConfiguration _configuration;
+        private readonly HttpClient _httpClient;
 
-        private string _urlFilmPrefix;
-        private readonly string _urlParameters;
-        private readonly string _token;
 
-        public KinopoiskDataClient(IHttpClientFactory httpClientFactory, IConfiguration configuration)
+        public KinopoiskDataClient(HttpClient httpClient, IConfiguration configuration)
         {
-            _httpClientFactory = httpClientFactory;
-            _configuration = configuration;
-
-            _urlFilmPrefix = _configuration.GetSection("KinopoiskAPISettings:url").Value;
-            _urlParameters = _configuration.GetSection("KinopoiskAPISettings:urlParameters").Value;
-            _token = _configuration.GetSection("KinopoiskAPISettings:token").Value;
+            _httpClient = httpClient;
         }
 
         public  async Task<Film> GetFilmAttributes(string link)
         {
-            var url = _urlFilmPrefix + link;
+            var url = _httpClient.BaseAddress + link;
 
-            var httpClient = _httpClientFactory.CreateClient();
-
-            httpClient.BaseAddress = new Uri(url);
-
-
-            httpClient.DefaultRequestHeaders.Add("X-API-KEY", _urlParameters);
-            httpClient.DefaultRequestHeaders.Add("Bearer", _token);
-            httpClient.DefaultRequestHeaders.Accept.Add(
-                     new MediaTypeWithQualityHeaderValue("application/json"));
-
-
-            var response = await httpClient.GetAsync(url);
+            var response = await _httpClient.GetAsync(url);
 
             if (response.IsSuccessStatusCode)
             {

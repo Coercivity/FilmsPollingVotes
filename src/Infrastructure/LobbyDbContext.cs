@@ -7,9 +7,7 @@ namespace Infrastructure
 {
     public partial class LobbyDbContext : DbContext
     {
-        public LobbyDbContext()
-        {
-        }
+
 
         public LobbyDbContext(DbContextOptions<LobbyDbContext> options)
             : base(options)
@@ -19,14 +17,6 @@ namespace Infrastructure
         public virtual DbSet<Film> Films { get; set; }
         public virtual DbSet<Meeting> Meetings { get; set; }
         public virtual DbSet<User> Users { get; set; }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            if (!optionsBuilder.IsConfigured)
-            {
-                optionsBuilder.UseSqlServer("Server=(localdb)\\MSSQLLocalDB;Database=LobbyDb");
-            }
-        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
