@@ -22,7 +22,7 @@ namespace LobbyMVC
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllersWithViews();
+            services.AddControllersWithViews(options => options.SuppressAsyncSuffixInActionNames = false);
 
             services.AddSignalR();
 

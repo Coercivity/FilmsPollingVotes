@@ -5,7 +5,7 @@
 
 
 
-<form asp-action="create" asp-controller="lobby">
+<form asp-action="AddFilmAsync" asp-controller="lobby">
     <p>
         <label>Ссылка</label><br />
         <input type="text" name="link" />
@@ -15,6 +15,19 @@
         <input type="submit" value="Отправить" />
     </p>
 </form>
+
+<form asp-action="GetFilmListAsync" asp-controller="lobby">
+    <p>
+        <label>Получить список фильмов</label><br />
+        
+    </p>
+
+    <p>
+        <input type="submit" value="Отправить" />
+    </p>
+</form>
+
+
 
 <div>
     <span>

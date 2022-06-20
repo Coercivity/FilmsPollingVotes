@@ -10,7 +10,7 @@ namespace LobbyMVC.FilmPollingDataService
         Task<Guid> GetWinnerByLobbyIdAsync(Guid id);
         Task RemoveFilmByIdAsync(Guid id, Guid lobbyId);
         Task AddFilmAsync(PollingModel film);
-        Task<List<PollingModel>> GetFilmsByLobbyIdAsync(Guid id);
+        Task<IEnumerable<Film>> GetFilmsByLobbyIdAsync(Guid id);
 
         
     }

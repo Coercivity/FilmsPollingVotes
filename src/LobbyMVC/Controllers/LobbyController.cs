@@ -30,9 +30,25 @@ namespace LobbyMVC.Controllers
         }
 
 
-        public async Task<ActionResult> Create(string link)
+        public async Task<ActionResult> GetFilmListAsync()
         {
-            //var film = await _kinopoiskDataClient.GetFilmAttributes(link);
+            var lobbyId = Guid.Parse("3fa85f64-5717-4562-b3fc-2c963f66afa6");
+
+
+            var films = await _filmPollingDataClient.GetFilmsByLobbyIdAsync(lobbyId);
+
+            if(films is null)
+            {
+                return NotFound();
+            }
+
+            return View("index", films);
+
+        }
+
+        public async Task<ActionResult> AddFilmAsync(string link)
+        {
+            var film = await _kinopoiskDataClient.GetFilmAttributes(link);
 
             var lobbyId = Guid.Parse("3fa85f64-5717-4562-b3fc-2c963f66afa1");
 
@@ -40,20 +56,19 @@ namespace LobbyMVC.Controllers
 
             var filmId = Guid.Parse("3fa85f64-5717-4562-b3fc-2c963f66afa3");
 
-          // var films = await _filmPollingDataClient.GetFilmsByLobbyIdAsync(lobbyId);
+
+
 
             var filmToSend = new PollingModel() { 
                 CreatorId = creatorId,
                 EntityId = filmId,
                 MeetingId = lobbyId,
                 CreatorWeight = 1
-
-
             };
 
             await _filmPollingDataClient.AddFilmAsync(filmToSend);
 
-            return View("index");
+            return View("index", film);
         }
 
 

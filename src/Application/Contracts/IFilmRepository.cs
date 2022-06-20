@@ -8,8 +8,8 @@ namespace Application.Contracts
     public interface IFilmRepository
     {
         Task<Film> GetFilmByIdAsync(Guid id);
-        Task<List<Film>> GetFilmsByMeetingIdAsync(Guid id);
-        Task<List<Film>> GetFilmsAsync();
+        Task<IEnumerable<Film>> GetFilmsByMeetingIdAsync(Guid id);
+        Task<IEnumerable<Film>> GetFilmsAsync();
 
         Task AddFilmAsync(Film film);
 

@@ -27,13 +27,13 @@ namespace Infrastructure.Repositories
             throw new NotImplementedException();
         }
 
-        public async Task<List<Film>> GetFilmsAsync()
+        public async Task<IEnumerable<Film>> GetFilmsAsync()
         {
             var films = await _lobbyDbContext.Films.ToListAsync();
             return films;
         }
 
-        public async Task<List<Film>> GetFilmsByMeetingIdAsync(Guid id)
+        public async Task<IEnumerable<Film>> GetFilmsByMeetingIdAsync(Guid id)
         {
             throw new NotFiniteNumberException();
         }

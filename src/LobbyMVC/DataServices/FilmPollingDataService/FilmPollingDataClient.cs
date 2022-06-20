@@ -40,7 +40,7 @@ namespace LobbyMVC.FilmPollingDataService
 
         }
 
-        public async Task<List<PollingModel>> GetFilmsByLobbyIdAsync(Guid id)
+        public async Task<IEnumerable<Film>> GetFilmsByLobbyIdAsync(Guid id)
         {
             var url = _urlPositionsPrefix + id.ToString();
 
@@ -48,7 +48,7 @@ namespace LobbyMVC.FilmPollingDataService
 
             if (response.IsSuccessStatusCode)
             {
-                var films = response.Content.ReadAsAsync<List<PollingModel>>().Result;
+                var films = response.Content.ReadAsAsync<IEnumerable<Film>>().Result;
                 return films;
             }
 
