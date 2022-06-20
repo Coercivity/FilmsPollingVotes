@@ -32,13 +32,28 @@ namespace LobbyMVC.Controllers
 
         public async Task<ActionResult> Create(string link)
         {
-            var film = await _kinopoiskDataClient.GetFilmAttributes(link);
+            //var film = await _kinopoiskDataClient.GetFilmAttributes(link);
 
-            var lobbyId = Guid.Parse("3fa85f64-5717-4562-b3fc-2c963f66afa6");
+            var lobbyId = Guid.Parse("3fa85f64-5717-4562-b3fc-2c963f66afa1");
 
-           var films = _filmPollingDataClient.GetFilmsByLobbyIdAsync(lobbyId);
+            var creatorId = Guid.Parse("3fa85f64-5717-4562-b3fc-2c963f66afa2");
 
-            return View("index", film);
+            var filmId = Guid.Parse("3fa85f64-5717-4562-b3fc-2c963f66afa3");
+
+          // var films = await _filmPollingDataClient.GetFilmsByLobbyIdAsync(lobbyId);
+
+            var filmToSend = new PollingModel() { 
+                CreatorId = creatorId,
+                EntityId = filmId,
+                MeetingId = lobbyId,
+                CreatorWeight = 1
+
+
+            };
+
+            await _filmPollingDataClient.AddFilmAsync(filmToSend);
+
+            return View("index");
         }
 
 

@@ -33,8 +33,6 @@ namespace LobbyMVC
             services.AddHttpClients(Configuration);
 
 
-
-
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

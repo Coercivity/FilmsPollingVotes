@@ -21,7 +21,7 @@ namespace Polling.API.Controllers
         private readonly IEntityPositionPicker _entityPositionPicker;
         private readonly IMapper _mapper;
         private readonly ILogger<PollingController> _logger;
-        
+
 
         public PollingController(IPollingRepository pollingRepository, IVoteWeightCalculator weightCalculator,
                                  IMapper mapper, IEntityPositionPicker entityPositionPicker, ILogger<PollingController> logger)
@@ -48,16 +48,16 @@ namespace Polling.API.Controllers
 
             return Ok(_mapper.Map<IEnumerable<EntityPosition>, IEnumerable<PositionModel>>(positions));
         }
-            
+
 
 
         [HttpGet]
-        [Route("{positionId}")]
-        public async Task<ActionResult<PositionModel>> GetPositionAsync([Required] Guid positionId)
+        [Route("{entityId}")]
+        public async Task<ActionResult<PositionModel>> GetPositionAsync([Required] Guid entityId, [Required] Guid meetingId)
         {
-            var position = await _pollingRepository.GetPositionByIdAsync(positionId);
+            var position = await _pollingRepository.GetPositionByMeetingAndEntityIdAsync(entityId, meetingId);
 
-            if(position is null)
+            if (position is null)
             {
                 return NotFound();
             }
@@ -74,7 +74,7 @@ namespace Polling.API.Controllers
         {
             var positions = await _pollingRepository.GetPositionsByMeetingIdAsync(meetingId);
 
-            if(positions is null)
+            if (positions is null)
             {
                 return NotFound();
             }
@@ -99,27 +99,27 @@ namespace Polling.API.Controllers
                 EntityId = createModel.EntityId,
                 CreatorWeight = createModel.CreatorWeight,
                 Id = Guid.NewGuid(),
-                Weight = createModel.CreatorWeight   
+                Weight = createModel.CreatorWeight
             };
 
             await _pollingRepository.CreatePositionAsync(newEntityPosition);
-            await _weightCalculator.CalculateWeightsByUserAndMeetingIdAsync(createModel.CreatorId, createModel.MeetingId, 
+            await _weightCalculator.CalculateWeightsByUserAndMeetingIdAsync(createModel.CreatorId, createModel.MeetingId,
                                                                                                 createModel.CreatorWeight);
 
             _logger.LogInformation($"{DateTime.UtcNow.ToString("hh:mm:ss")}: Add new position with {createModel.MeetingId} meeting id");
 
-            return CreatedAtAction(nameof(GetPositionAsync), new { id = newEntityPosition.EntityId }, 
+            return CreatedAtAction(nameof(GetPositionAsync), new { entityId = newEntityPosition.EntityId, meetingId = newEntityPosition.MeetingId },
                                     _mapper.Map<EntityPosition, PositionModel>(newEntityPosition));
         }
 
 
 
         [HttpDelete("{entityId}")]
-        public async Task<ActionResult> DeletePositionAsync([Required] Guid entityId)
+        public async Task<ActionResult> DeletePositionAsync([Required] Guid entityId, [Required] Guid meetingId)
         {
-            var position = await _pollingRepository.GetPositionByIdAsync(entityId);
+            var position = await _pollingRepository.GetPositionByMeetingAndEntityIdAsync(entityId, meetingId);
 
-            if(position is null)
+            if (position is null)
             {
                 return NotFound();
             }

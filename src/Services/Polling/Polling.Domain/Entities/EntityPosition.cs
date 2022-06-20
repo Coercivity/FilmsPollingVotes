@@ -14,4 +14,3 @@ namespace Polling.Domain.Entities
     }
 }
 
-

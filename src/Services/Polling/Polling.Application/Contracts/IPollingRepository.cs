@@ -8,7 +8,7 @@ namespace Polling.Application.Contracts
     public interface IPollingRepository
     {
         Task CreatePositionAsync(EntityPosition position);
-        Task<EntityPosition> GetPositionByIdAsync(Guid id);
+        Task<EntityPosition> GetPositionByMeetingAndEntityIdAsync(Guid id, Guid meetingId);
         Task<IEnumerable<EntityPosition>> GetPositionsByMeetingIdAsync(Guid id);
         Task DeletePositionAsync(EntityPosition position);
         Task<IEnumerable<EntityPosition>> GetPositionsByMeetingAndCreatorIdAsync(Guid userId, Guid meetingId);

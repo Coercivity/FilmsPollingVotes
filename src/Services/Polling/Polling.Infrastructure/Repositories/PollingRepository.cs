@@ -31,11 +31,11 @@ namespace Polling.Infrastructure.Repositories
 
             var existingPosition = await _entitiesCollection.Find(filter).FirstOrDefaultAsync();
 
-            if(existingPosition is null)
+            if (existingPosition is null)
             {
                 await _entitiesCollection.InsertOneAsync(newPosition);
             }
-            
+
         }
 
 
@@ -47,9 +47,10 @@ namespace Polling.Infrastructure.Repositories
         }
 
 
-        public async Task<EntityPosition> GetPositionByIdAsync(Guid id)
+        public async Task<EntityPosition> GetPositionByMeetingAndEntityIdAsync(Guid entityId, Guid meetingId)
         {
-            var filter = _filterBuilder.Eq(position => position.EntityId, id);
+            var filter = _filterBuilder.Eq(position => position.EntityId, entityId)
+                     & _filterBuilder.Eq(position => position.MeetingId, meetingId);
             return await _entitiesCollection.Find(filter).FirstOrDefaultAsync();
         }
 
@@ -65,7 +66,7 @@ namespace Polling.Infrastructure.Repositories
 
         public async Task<IEnumerable<EntityPosition>> GetPositionsByMeetingAndCreatorIdAsync(Guid userId, Guid meetingId)
         {
-            var filter = _filterBuilder.Eq(position => position.MeetingId, meetingId) 
+            var filter = _filterBuilder.Eq(position => position.MeetingId, meetingId)
                         & _filterBuilder.Eq(position => position.CreatorId, userId);
             var positions = await _entitiesCollection.Find(filter).ToListAsync();
 

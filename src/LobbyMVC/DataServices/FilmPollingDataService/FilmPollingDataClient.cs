@@ -3,7 +3,8 @@ using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
-using System.Net.Http.Headers;
+using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace LobbyMVC.FilmPollingDataService
@@ -25,12 +26,21 @@ namespace LobbyMVC.FilmPollingDataService
 
         }
 
-        public Task AddFilmAsync(PollingFilmModel film)
+        public async Task AddFilmAsync(PollingModel film)
         {
-            throw new NotImplementedException();
+            var httpContent = new StringContent(
+                JsonSerializer.Serialize(film),
+                Encoding.UTF8,
+                "application/json");
+
+            var response = await _httpClient.PostAsync(_httpClient.BaseAddress.ToString(), httpContent);
+
+
+            response.EnsureSuccessStatusCode();
+
         }
 
-        public async Task<List<PollingFilmModel>> GetFilmsByLobbyIdAsync(Guid id)
+        public async Task<List<PollingModel>> GetFilmsByLobbyIdAsync(Guid id)
         {
             var url = _urlPositionsPrefix + id.ToString();
 
@@ -38,8 +48,8 @@ namespace LobbyMVC.FilmPollingDataService
 
             if (response.IsSuccessStatusCode)
             {
-                var film = response.Content.ReadAsAsync<List<PollingFilmModel>>().Result;
-                return film;
+                var films = response.Content.ReadAsAsync<List<PollingModel>>().Result;
+                return films;
             }
 
             return null;
