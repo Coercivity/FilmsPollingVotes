@@ -10,9 +10,7 @@ namespace Application.Contracts
         Task<Film> GetFilmByIdAsync(Guid id);
         Task<IEnumerable<Film>> GetFilmsByMeetingIdAsync(Guid id);
         Task<IEnumerable<Film>> GetFilmsAsync();
-
         Task AddFilmAsync(Film film);
-
         Task RemoveFilmAsync(Film film);
     }
 }

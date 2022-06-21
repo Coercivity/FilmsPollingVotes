@@ -3,7 +3,6 @@ using Domain.Entities;
 using LobbyMVC.Dtos;
 using LobbyMVC.FilmPollingDataService;
 using LobbyMVC.KinopoiskDataService;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;

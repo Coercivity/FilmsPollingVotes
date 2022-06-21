@@ -17,30 +17,43 @@ namespace Infrastructure.Repositories
             _lobbyDbContext = lobbyDbContext;
         }
 
-        public Task AddFilmAsync(Film film)
+        public async Task AddFilmAsync(Film film)
         {
-            throw new NotImplementedException();
+            await _lobbyDbContext.AddAsync(film);
+            await _lobbyDbContext.SaveChangesAsync();
         }
 
-        public Task<Film> GetFilmByIdAsync(Guid id)
+        public async Task<Film> GetFilmByIdAsync(Guid id)
         {
-            throw new NotImplementedException();
+            var film = await _lobbyDbContext.Films.Where(film => film.Id.Equals(id)).FirstOrDefaultAsync();
+
+            return film;
         }
 
         public async Task<IEnumerable<Film>> GetFilmsAsync()
         {
-            var films = await _lobbyDbContext.Films.ToListAsync();
+            var films = await _lobbyDbContext.Films.ToArrayAsync();
             return films;
         }
 
         public async Task<IEnumerable<Film>> GetFilmsByMeetingIdAsync(Guid id)
         {
-            throw new NotFiniteNumberException();
+            var films = await _lobbyDbContext.Films.Where(film => film.LobbyId.Equals(id)).ToArrayAsync();
+
+            return films;
         }
 
-        public Task RemoveFilmAsync(Film film)
+        public async Task RemoveFilmAsync(Film film)
         {
-            throw new NotImplementedException();
+            var filmToRemove = await _lobbyDbContext.Films.Where(filmEntity => 
+                                                        filmEntity.Id.Equals(film.Id)).FirstOrDefaultAsync();
+
+            if(filmToRemove is not null)
+            {
+                _lobbyDbContext.Remove(filmToRemove);
+                await _lobbyDbContext.SaveChangesAsync();
+            }
+
         }
     }
 }
