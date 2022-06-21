@@ -3,15 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31624.102
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polling.API", "Services\Polling\Polling.API\Polling.API.csproj", "{8DE4AA58-33FD-44ED-A34A-965AA50DC914}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polling.API", "Polling\Polling.API\Polling.API.csproj", "{8DE4AA58-33FD-44ED-A34A-965AA50DC914}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polling.Tests", "Services\Polling\Polling.Tests\Polling.Tests.csproj", "{6764A6C7-5591-4815-9B4B-0723794FBC5F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polling.Tests", "Polling\Polling.Tests\Polling.Tests.csproj", "{6764A6C7-5591-4815-9B4B-0723794FBC5F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polling.Infrastructure", "Services\Polling\Polling.Infrastructure\Polling.Infrastructure.csproj", "{866E3FB4-D132-43B3-B93F-A400A654F43D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polling.Infrastructure", "Polling\Polling.Infrastructure\Polling.Infrastructure.csproj", "{866E3FB4-D132-43B3-B93F-A400A654F43D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polling.Domain", "Services\Polling\Polling.Domain\Polling.Domain.csproj", "{9C8C2AE8-DF1C-4479-80E7-270D258655EC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polling.Domain", "Polling\Polling.Domain\Polling.Domain.csproj", "{9C8C2AE8-DF1C-4479-80E7-270D258655EC}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polling.Application", "Services\Polling\Polling.Application\Polling.Application.csproj", "{DA2C3FF7-12B0-4A0A-83B9-1C4AA75A91C5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polling.Application", "Polling\Polling.Application\Polling.Application.csproj", "{DA2C3FF7-12B0-4A0A-83B9-1C4AA75A91C5}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{3E1F91A1-50DD-4382-BA63-182C3ED76333}"
 EndProject

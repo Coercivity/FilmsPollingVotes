@@ -60,7 +60,7 @@ namespace LobbyMVC
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Lobby}/{action=Index}/{id?}");
-                endpoints.MapHub<MeetingHub>("/lobby");
+                endpoints.MapHub<LobbyHub>("/lobby");
             });
         }
     }

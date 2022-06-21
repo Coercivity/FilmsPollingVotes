@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32210.238
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LobbyMVC", "LobbyMVC.csproj", "{D003AB3E-79AA-4C3A-B9AB-FA6527DB7D4D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LobbyMVC", "LobbyMVC\LobbyMVC.csproj", "{D003AB3E-79AA-4C3A-B9AB-FA6527DB7D4D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure", "..\Infrastructure\Infrastructure.csproj", "{40A5CA81-744C-474D-BC03-C601FAFDFC65}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{40A5CA81-744C-474D-BC03-C601FAFDFC65}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "..\Domain\Domain.csproj", "{7B1B3A69-F61A-49A6-A986-F681DC4D8932}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Domain\Domain.csproj", "{7B1B3A69-F61A-49A6-A986-F681DC4D8932}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application", "..\Application\Application.csproj", "{ED24D134-219D-4805-B412-43B39EDD0568}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application", "Application\Application.csproj", "{ED24D134-219D-4805-B412-43B39EDD0568}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

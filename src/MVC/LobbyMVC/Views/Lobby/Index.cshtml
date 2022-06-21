@@ -16,27 +16,22 @@
     </p>
 </form>
 
-<form asp-action="GetFilmListAsync" asp-controller="lobby">
+<form>
     <p>
         <label>Получить список фильмов</label><br />
-        
     </p>
 
-    <p>
-        <input type="submit" value="Отправить" />
-    </p>
+    <div id="inputForm">
+        <input type="text" id="message" />
+        <input type="button" id="sendBtn" value="Отправить" />
+    </div>
 </form>
 
 
 
-<div>
-    <span>
-        @if(@Model is not null)
-        {
-            @Model.Description
-            
-        }
-    </span>
+<div id="chatroom">
+
+
 </div>
 
 
