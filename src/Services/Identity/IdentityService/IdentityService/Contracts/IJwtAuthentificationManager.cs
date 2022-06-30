@@ -1,7 +1,9 @@
-﻿namespace IdentityService.Contracts
+﻿using System.Threading.Tasks;
+
+namespace IdentityService.Contracts
 {
     public interface IJwtAuthentificationManager
     {
-        string Authentificate(string username, string password); 
+        Task<string> Authentificate(string username, string password); 
     }
 }

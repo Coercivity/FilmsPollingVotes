@@ -1,3 +1,6 @@
+using IdentityService.Contracts;
+using IdentityService.Implementations;
+using IdentityService.ServiceExtensions;
 using Infrastructure;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -20,8 +23,13 @@ namespace IdentityService
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.AddAutoMapper(typeof(Startup));
+
+            services.AddJwtAuthentification(Configuration.GetSection("Keys:JwtKey").Value);
 
             services.AddDatabaseRepositories(Configuration.GetConnectionString("LocalConnection"));
+            services.AddTransient<IJwtAuthentificationManager, JwtAuthentificationManager>();
+            
 
             services.AddSwaggerGen(c =>
             {
@@ -42,7 +50,7 @@ namespace IdentityService
 
             app.UseRouting();
 
-            app.UseAuthorization();
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

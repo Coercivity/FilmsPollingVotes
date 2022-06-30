@@ -1,83 +1,93 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using Domain.Entities;
+using IdentityService.Contracts;
+using IdentityService.Dtos;
+using Infrastructure.Repository.Contracts;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+
+
 
 namespace IdentityService.Controllers
 {
-    public class AuthorizationController : Controller
+    [Authorize]
+    [Route("api/[controller]")]
+    [ApiController]
+    public class AuthorizationController : ControllerBase
     {
-        // GET: AuthorizationController
-        public ActionResult Index()
+        private readonly IJwtAuthentificationManager _jwtAuthentificationManager;
+        private readonly IIdentityRepository _identityRepository;
+        private readonly IMapper _mapper;
+        private readonly ILogger<AuthorizationController> _logger;
+
+        public AuthorizationController(IJwtAuthentificationManager jwtAuthentificationManager,
+                                       IIdentityRepository identityRepository, IMapper mapper,
+                                       ILogger<AuthorizationController> logger)
         {
-            return View();
+            _jwtAuthentificationManager = jwtAuthentificationManager;
+            _identityRepository = identityRepository;
+            _mapper = mapper;
+            _logger = logger;
         }
 
-        // GET: AuthorizationController/Details/5
-        public ActionResult Details(int id)
+        [AllowAnonymous]
+        [HttpPost("register")]
+        public async Task<ActionResult<RegistrationStatus>> Register([FromBody] CreateUserDto user)
         {
-            return View();
-        }
 
-        // GET: AuthorizationController/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
+            _logger.LogInformation($"{DateTime.UtcNow.ToString("hh:mm:ss")}: registration attempt");
 
-        // POST: AuthorizationController/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
-        {
-            try
+
+            var newUser = _mapper.Map<CreateUserDto, User>(user);
+            newUser.Id = Guid.NewGuid();
+
+            var result = await _identityRepository.TryRegisterAsync(newUser);
+
+            switch (result)
             {
-                return RedirectToAction(nameof(Index));
+                case RegistrationStatus.Success:
+                    _logger.LogInformation($"{DateTime.UtcNow.ToString("hh:mm:ss")}: successful registration");
+                    break;
+                case RegistrationStatus.AccountExists:
+                    _logger.LogInformation($"{DateTime.UtcNow.ToString("hh:mm:ss")}: registration: account " +
+                                           $"{newUser.UserName} already exists");
+                    break;
+                case RegistrationStatus.Error:
+                    _logger.LogInformation($"{DateTime.UtcNow.ToString("hh:mm:ss")}: registration error");
+                    break;
+                default:
+                    break;
             }
-            catch
-            {
-                return View();
-            }
+
+            return Ok(result);
+
         }
 
-        // GET: AuthorizationController/Edit/5
-        public ActionResult Edit(int id)
+
+        [AllowAnonymous]
+        [HttpPost("authentificate")]
+        public async Task<ActionResult<string>> Authentificate([FromBody] UserDto user)
         {
-            return View();
+
+            _logger.LogInformation($"{DateTime.UtcNow.ToString("hh:mm:ss")}: authentification attempt");
+
+            var token = await _jwtAuthentificationManager.Authentificate(user.UserName, user.Password);
+
+            if (token is null)
+                return Unauthorized();
+
+            _logger.LogInformation($"{DateTime.UtcNow.ToString("hh:mm:ss")}: successful authentification");
+
+            return Ok(token);
+
         }
 
-        // POST: AuthorizationController/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
 
-        // GET: AuthorizationController/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: AuthorizationController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
     }
 }
+
