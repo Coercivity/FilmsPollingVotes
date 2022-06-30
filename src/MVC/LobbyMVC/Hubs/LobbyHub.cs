@@ -1,7 +1,6 @@
 ﻿using Domain.Entities;
 using LobbyMVC.KinopoiskDataService;
 using Microsoft.AspNetCore.SignalR;
-using System;
 using System.Text.Json;
 using System.Threading.Tasks;
 
