@@ -1,5 +1,6 @@
 ﻿using LobbyMVC.FilmPollingDataService;
 using LobbyMVC.KinopoiskDataService;
+using LobbyMVC.Services.IdentityService;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -36,6 +37,15 @@ namespace LobbyMVC.Extensions
 
             });
 
+
+            services.AddHttpClient<IIdentityService, IdentityService>(client => {
+
+                client.BaseAddress = new Uri(configuration.GetSection("IdentityAPISettings:url").Value);
+                
+                client.DefaultRequestHeaders.Accept
+                         .Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+            });
 
 
             return services;

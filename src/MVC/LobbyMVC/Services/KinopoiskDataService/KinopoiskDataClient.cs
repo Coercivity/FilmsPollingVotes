@@ -18,7 +18,7 @@ namespace LobbyMVC.KinopoiskDataService
             _httpClient = httpClient;
         }
 
-        public  async Task<Film> GetFilmAttributes(string link)
+        public async Task<Film> GetFilmAttributes(string link)
         {
             var url = _httpClient.BaseAddress + link;
 

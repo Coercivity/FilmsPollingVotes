@@ -27,7 +27,7 @@ namespace IdentityService
 
             services.AddJwtAuthentification(Configuration.GetSection("Keys:JwtKey").Value);
 
-            services.AddDatabaseRepositories(Configuration.GetConnectionString("LocalConnection"));
+            services.AddDatabaseRepositories(Configuration.GetConnectionString("DefaultConnection"));
             services.AddTransient<IJwtAuthentificationManager, JwtAuthentificationManager>();
             
 
