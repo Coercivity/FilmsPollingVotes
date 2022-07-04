@@ -11,23 +11,15 @@ namespace LobbyMVC.Hubs
     public class LobbyHub : Hub
     {
         private readonly IKinopoiskDataClient _kinopoiskDataClient;
-        private readonly IIdentityService _identityService;
 
-        public LobbyHub(IKinopoiskDataClient kinopoiskDataClient, IIdentityService identityService)
+        public LobbyHub(IKinopoiskDataClient kinopoiskDataClient)
         {
             _kinopoiskDataClient = kinopoiskDataClient;
-            _identityService = identityService;
         }
 
         public async Task Send(string message)
         {
 
-            var authentificateUserDto = new AuthentificateUserDto()
-            {
-                UserName = "ass",
-                Password = "qwert"
-            };
-            var claims = await _identityService.AuthorizeUserAsync(authentificateUserDto);
 
             var film = await _kinopoiskDataClient.GetFilmAttributes(message);
 

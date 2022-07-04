@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace LobbyMVC.Services.IdentityService
 {
-    public interface IIdentityService
+    public interface IJWTIdentityService
     {
-        Task<IEnumerable<Claim>> AuthorizeUserAsync(AuthentificateUserDto authentificateUserDto);
+        Task<ClaimsPrincipal> AuthorizeUserAsync(AuthentificateUserDto authentificateUserDto);
 
         Task RegisterUserAsync(User user);
     }

@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace LobbyMVC.Services.IdentityService
 {
-    public class IdentityService : IIdentityService
+    public class IdentityService : IJWTIdentityService
     {
         private readonly HttpClient _httpClient;
         private readonly IConfiguration _configuration;
@@ -31,7 +31,7 @@ namespace LobbyMVC.Services.IdentityService
             _authentificationSuffix = _configuration.GetSection("IdentityAPISettings:authentificate").Value;
         }
 
-        private IEnumerable<Claim> GetTokenClaims(string token)
+        private ClaimsPrincipal GetTokenClaims(string token)
         {
 
             if (string.IsNullOrEmpty(token))
@@ -53,7 +53,7 @@ namespace LobbyMVC.Services.IdentityService
                 ClaimsPrincipal claimsPrincipal = jwtSecurityTokenHandler.ValidateToken(token, tokenValidationParameters,
                                                                                         out SecurityToken securityToken);
 
-                return claimsPrincipal.Claims;
+                return claimsPrincipal;
             }
             catch (Exception)
             {
@@ -64,7 +64,7 @@ namespace LobbyMVC.Services.IdentityService
         }
 
 
-        public async Task<IEnumerable<Claim>> AuthorizeUserAsync(AuthentificateUserDto authentificateUserDto)
+        public async Task<ClaimsPrincipal> AuthorizeUserAsync(AuthentificateUserDto authentificateUserDto)
         {
 
             var url = _httpClient.BaseAddress + _authentificationSuffix;

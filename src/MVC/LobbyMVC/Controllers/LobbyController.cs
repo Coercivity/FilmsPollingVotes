@@ -28,6 +28,20 @@ namespace LobbyMVC.Controllers
             return View();
         }
 
+        public async Task<ActionResult> CreateLobby(string name)
+        {
+            var meeting = new Meeting()
+            {
+                Id = Guid.NewGuid(),
+                Name = name
+ 
+            };
+
+            return View("Lobby");
+        }
+
+
+
 
         public async Task<ActionResult> GetFilmListAsync()
         {

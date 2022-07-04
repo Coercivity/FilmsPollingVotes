@@ -38,7 +38,7 @@ namespace LobbyMVC.Extensions
             });
 
 
-            services.AddHttpClient<IIdentityService, IdentityService>(client => {
+            services.AddHttpClient<IJWTIdentityService, IdentityService>(client => {
 
                 client.BaseAddress = new Uri(configuration.GetSection("IdentityAPISettings:url").Value);
                 
