@@ -20,11 +20,26 @@ hubConnection.on("Send", function (data) {
 
 });
 
+hubConnection.on("OnConnect", function (connectionId) {
+
+    hubConnection.invoke("AddToGroup", getGroupName());
+});
+
+
+
 document.getElementById("sendBtn").addEventListener("click", function (e) {
+
     
     let message = document.getElementById("message").value;
-    hubConnection.invoke("Send", message);
-    
+
+    hubConnection.invoke("Send", message, getGroupName());
+
 });
+
+
+function getGroupName() {
+    return window.location.href.substring(window.location.href.lastIndexOf('/') + 1).toString();
+}
+
 
 hubConnection.start();

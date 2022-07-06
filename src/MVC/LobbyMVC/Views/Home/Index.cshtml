@@ -1,7 +1,16 @@
 ﻿
+
+
 @{
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
 
+
+
+<form asp-controller="Lobby" asp-action="CreateLobby">
+
+    <input type="text" placeholder="Название лобби" name="lobbyName" />
+    <button class="btn btn-outline-primary" type="submit">Создать</button>
+
+</form>

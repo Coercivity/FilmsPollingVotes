@@ -1,16 +1,20 @@
 ﻿using Application.Contracts;
 using Domain.Entities;
-using LobbyMVC.Dtos;
 using LobbyMVC.FilmPollingDataService;
+using LobbyMVC.Helpers;
 using LobbyMVC.KinopoiskDataService;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
 
 namespace LobbyMVC.Controllers
 {
+    [Authorize]
     public class LobbyController : Controller
     {
+
+
         private readonly IMeetingRepository _meetingRepository;
         private readonly IKinopoiskDataClient _kinopoiskDataClient;
         private readonly IFilmPollingDataClient _filmPollingDataClient;
@@ -23,27 +27,41 @@ namespace LobbyMVC.Controllers
             _filmPollingDataClient = filmPollingDataClient;
         }
 
-        public ActionResult Index()
+        [Route("meeting/{id}")]
+        public async Task<IActionResult> Index(Guid id)
         {
-            return View();
+
+            var meeting = await _meetingRepository.GetMeetingAsync(id);
+
+            return View(meeting);
         }
 
-        public async Task<ActionResult> CreateLobby(string name)
-        {
+
+
+
+
+        public async Task<IActionResult> CreateLobby(string lobbyName)
+        {   
+
+            var id = Guid.NewGuid();
+
+            var link = UriHelper.BuildLink(id, Url.Action(nameof(Index), "meeting"));
+
             var meeting = new Meeting()
             {
-                Id = Guid.NewGuid(),
-                Name = name
- 
+                Id = id,
+                Name = lobbyName,
+                URL = link
+
             };
 
-            return View("Lobby");
+            await _meetingRepository.CreateMeetingAsync(meeting);
+
+            return RedirectToAction(nameof(Index), new { id = meeting.Id });
         }
 
 
-
-
-        public async Task<ActionResult> GetFilmListAsync()
+        public async Task<IActionResult> GetFilmListAsync()
         {
             var lobbyId = Guid.Parse("3fa85f64-5717-4562-b3fc-2c963f66afa6");
             var filmId = Guid.Parse("3fa85f64-5717-4566-b3fc-2c963f66afa6");
@@ -51,8 +69,10 @@ namespace LobbyMVC.Controllers
 
             var films = await _filmPollingDataClient.GetFilmsByLobbyIdAsync(lobbyId);
 
-            var t = await _filmPollingDataClient.GetWinnerByLobbyIdAsync(lobbyId);
+            var winner = await _filmPollingDataClient.GetWinnerByLobbyIdAsync(lobbyId);
+
             await _filmPollingDataClient.RemoveFilmByIdAsync(filmId, lobbyId);
+
             if(films is null)
             {
                 return NotFound();

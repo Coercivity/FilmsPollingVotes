@@ -1,14 +1,18 @@
-﻿@model Film
+﻿@model Meeting
 
 
-<h1>TEST LOBBY</h1>
-
+<h1>Лобби</h1>
+<br />
+<div>@Model.URL</div>
+<br />
+<div>@Model.Name</div>
+<br />
 
 
 <form asp-action="AddFilmAsync" asp-controller="lobby">
     <p>
         <label>Ссылка</label><br />
-        <input type="text" name="link" />
+        <input type="text" name="name" />
     </p>
 
     <p>

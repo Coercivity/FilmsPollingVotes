@@ -1,10 +1,8 @@
 ﻿using LobbyMVC.Dtos;
 using LobbyMVC.Services.IdentityService;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace LobbyMVC.Controllers
@@ -17,12 +15,11 @@ namespace LobbyMVC.Controllers
         {
             _identityService = identityService;
         }
-
+        
         public IActionResult Index()
         {
             return View();
         }
-
 
         public async Task<IActionResult> AuthroizeAsync(AuthentificateUserDto authentificateUserDto)
         {

@@ -41,8 +41,6 @@ namespace LobbyMVC
                     op.AccessDeniedPath = "/denied";
 
                 });
-
-
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -74,7 +72,7 @@ namespace LobbyMVC
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Lobby}/{action=Index}/{id?}");
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapHub<LobbyHub>("/lobby");
             });
         }
