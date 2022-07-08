@@ -24,14 +24,13 @@ namespace LobbyMVC.KinopoiskDataService
 
             var response = await _httpClient.GetAsync(url);
 
-            if (response.IsSuccessStatusCode)
+            if (!response.IsSuccessStatusCode)
             {
-                var film = response.Content.ReadAsAsync<Film>().Result;
-                return film;
+                return null;
             }
 
+            return response.Content.ReadAsAsync<Film>().Result;
 
-            return null;
 
         }
     }

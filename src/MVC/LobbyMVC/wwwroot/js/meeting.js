@@ -9,29 +9,34 @@ hubConnection.on("Send", function (data) {
 
 
     let elem = document.createElement("p");
-
+    var img = document.createElement('img');
+    
     let messageObject = JSON.parse(data);
-    console.log(messageObject);
 
-    elem.appendChild(document.createTextNode(messageObject.Description));
+    img.src = messageObject.Film.PosterUrl;
+
+
+    elem.appendChild(document.createTextNode(messageObject.Film.Description));
     let firstElem = document.getElementById("chatroom").firstChild;
     document.getElementById("chatroom").insertBefore(elem, firstElem);
+    document.getElementById("chatroom").insertBefore(img, firstElem);
     
 
 });
 
 hubConnection.on("OnConnect", function (connectionId) {
-
     hubConnection.invoke("AddToGroup", getGroupName());
 });
 
 
+hubConnection.on("OnDisconnect", function (connectionId) {
+    hubConnection.invoke("RemoveFromGroup", getGroupName());
+});
+
 
 document.getElementById("sendBtn").addEventListener("click", function (e) {
 
-    
     let message = document.getElementById("message").value;
-
     hubConnection.invoke("Send", message, getGroupName());
 
 });

@@ -35,6 +35,8 @@ namespace LobbyMVC
 
             services.AddHttpClients(Configuration);
 
+            services.AddSingleton<LobbyManager>();
+
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).
                 AddCookie(op => {
                     op.LoginPath = "/login";

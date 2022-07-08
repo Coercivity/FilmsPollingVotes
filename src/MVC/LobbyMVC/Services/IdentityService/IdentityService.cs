@@ -66,7 +66,6 @@ namespace LobbyMVC.Services.IdentityService
 
         public async Task<ClaimsPrincipal> AuthorizeUserAsync(AuthentificateUserDto authentificateUserDto)
         {
-
             var url = _httpClient.BaseAddress + _authentificationSuffix;
 
             var message = new HttpRequestMessage(HttpMethod.Post, url);
@@ -81,18 +80,15 @@ namespace LobbyMVC.Services.IdentityService
             var response = await _httpClient.SendAsync(message);
 
 
-            if (response.IsSuccessStatusCode)
-            {
-                var token = response.Content.ReadAsAsync<string>().Result;
-                return GetTokenClaims(token);
-
+            if (!response.IsSuccessStatusCode)
+            { 
+                return null;
             }
 
-            return null;
-
+            return GetTokenClaims(response.Content.ReadAsAsync<string>().Result);
         }
 
-        public async Task RegisterUserAsync(User user)
+        public async Task RegisterUserAsync(RegisterUserDto user)
         {
 
             var url = _httpClient.BaseAddress + _registerSuffix;

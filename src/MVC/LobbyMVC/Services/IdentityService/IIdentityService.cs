@@ -10,6 +10,6 @@ namespace LobbyMVC.Services.IdentityService
     {
         Task<ClaimsPrincipal> AuthorizeUserAsync(AuthentificateUserDto authentificateUserDto);
 
-        Task RegisterUserAsync(User user);
+        Task RegisterUserAsync(RegisterUserDto user);
     }
 }

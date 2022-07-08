@@ -21,7 +21,17 @@ namespace LobbyMVC.Controllers
             return View();
         }
 
-        public async Task<IActionResult> AuthroizeAsync(AuthentificateUserDto authentificateUserDto)
+        [HttpGet("login")]
+        public IActionResult Login(string returnUrl = "")
+        {
+            ViewData["ReturnUrl"] = returnUrl;
+            return View("Index");
+        }
+
+
+
+
+        public async Task<IActionResult> AuthroizeAsync(AuthentificateUserDto authentificateUserDto, string returnUrl = "")
         {
             var claimsPrincipal = await _identityService.AuthorizeUserAsync(authentificateUserDto);
 
@@ -39,6 +49,11 @@ namespace LobbyMVC.Controllers
             return Redirect("/");
         }
 
+        public async Task<IActionResult> RegisterAsync(RegisterUserDto registerUserDto)
+        {
+            await _identityService.RegisterUserAsync(registerUserDto);
 
+            return Redirect("/");
+        }
     }
 }

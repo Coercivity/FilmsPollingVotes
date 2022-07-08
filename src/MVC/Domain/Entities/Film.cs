@@ -8,7 +8,7 @@ namespace Domain.Entities
         public string ShortDescription { get; set; }
         public string Description { get; set; }
         public string Year { get; set; }
-        public string ImagePath { get; set; }
+        public string PosterUrl { get; set; }
         public float RatingKinopoisk { get; set; }
     }
 
