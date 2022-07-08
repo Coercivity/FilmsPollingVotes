@@ -5,13 +5,21 @@ var hubConnection = new signalR.HubConnectionBuilder().withUrl("/lobby").build()
 
 
 
-hubConnection.on("Send", function (data) {
+hubConnection.on("AddItem", function (data) {
 
 
     let elem = document.createElement("p");
-    var img = document.createElement('img');
-    
+    let img = document.createElement('img');
+    let button = document.createElement('button');
+
+
+
     let messageObject = JSON.parse(data);
+
+    button.onclick = function () {
+        hubConnection.invoke("RemoveItem", messageObject.Film.Id, getGroupName());
+    }
+    button.data = messageObject.Film.NameRu;
 
     img.src = messageObject.Film.PosterUrl;
     console.log(messageObject);
@@ -20,6 +28,7 @@ hubConnection.on("Send", function (data) {
     let firstElem = document.getElementById("chatroom").firstChild;
     document.getElementById("chatroom").insertBefore(elem, firstElem);
     document.getElementById("chatroom").insertBefore(img, firstElem);
+    document.getElementById("chatroom").insertBefore(button, firstElem);
 
 });
 
@@ -27,12 +36,18 @@ hubConnection.on("Send", function (data) {
 hubConnection.on("UpdateItems", function (data) {
 
     let messageObject = JSON.parse(data);
-
-    console.log(messageObject);
+    
+    
 
     for (var i = 0; i < messageObject.length; i++) {
         let elem = document.createElement("p");
         var img = document.createElement('img');
+
+        button.onclick = function () {
+            hubConnection.invoke("RemoveItem", messageObject[i].Film.Id, getGroupName());
+        }
+        button.Description = messageObject.Film.NameRu;
+
 
         img.src = messageObject[i].Film.PosterUrl
 
@@ -40,6 +55,7 @@ hubConnection.on("UpdateItems", function (data) {
         let firstElem = document.getElementById("chatroom").firstChild;
         document.getElementById("chatroom").insertBefore(elem, firstElem);
         document.getElementById("chatroom").insertBefore(img, firstElem);
+        document.getElementById("chatroom").insertBefore(button, firstElem);
 
     }
 
@@ -64,7 +80,7 @@ hubConnection.on("OnDisconnect", function (connectionId) {
 document.getElementById("sendBtn").addEventListener("click", function (e) {
 
     let message = document.getElementById("message").value;
-    hubConnection.invoke("Send", message, getGroupName());
+    hubConnection.invoke("AddItem", message, getGroupName());
 
 });
 

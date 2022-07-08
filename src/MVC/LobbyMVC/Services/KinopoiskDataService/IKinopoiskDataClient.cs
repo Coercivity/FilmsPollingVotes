@@ -5,6 +5,6 @@ namespace LobbyMVC.KinopoiskDataService
 {
     public interface IKinopoiskDataClient
     {
-        Task<Film> GetFilmAttributes(string link);
+        Task<Film> GetFilmAttributes(string id);
     }
 }

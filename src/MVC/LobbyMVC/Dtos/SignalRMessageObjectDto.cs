@@ -2,7 +2,7 @@
 
 namespace LobbyMVC.Dtos
 {
-    public class SignalRMessageObjectDto
+    public class SignalRMessageObject
     {
         public Film Film { get; set; }
 

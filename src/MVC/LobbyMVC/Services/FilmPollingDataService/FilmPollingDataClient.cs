@@ -46,13 +46,12 @@ namespace LobbyMVC.FilmPollingDataService
 
             var response = await _httpClient.GetAsync(url);
 
-            if (response.IsSuccessStatusCode)
+            if (!response.IsSuccessStatusCode)
             {
-                var films = response.Content.ReadAsAsync<IEnumerable<Film>>().Result;
-                return films;
+                return null;
             }
+            return response.Content.ReadAsAsync<IEnumerable<Film>>().Result;
 
-            return null;
         }
 
         public async Task<Guid> GetWinnerByLobbyIdAsync(Guid id)
@@ -61,12 +60,12 @@ namespace LobbyMVC.FilmPollingDataService
 
             var response = await _httpClient.GetAsync(url);
 
-            if (response.IsSuccessStatusCode)
+            if (!response.IsSuccessStatusCode)
             {
-                return response.Content.ReadAsAsync<Guid>().Result;
+                return Guid.Empty;
             }
 
-            return Guid.Empty;
+            return response.Content.ReadAsAsync<Guid>().Result;
         }
 
         public async Task RemoveFilmByIdAsync(Guid id, Guid lobbyId)

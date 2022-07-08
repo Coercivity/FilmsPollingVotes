@@ -1,4 +1,5 @@
 ﻿using Domain.Entities;
+using LobbyMVC.Helpers;
 using Microsoft.Extensions.Configuration;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -9,7 +10,7 @@ namespace LobbyMVC.KinopoiskDataService
 
     public class KinopoiskDataClient : IKinopoiskDataClient
     {
-        private const string LINKBASE = "https://www.kinopoisk.ru/film/";
+        
         private readonly HttpClient _httpClient;
 
         public KinopoiskDataClient(HttpClient httpClient, IConfiguration configuration)
@@ -17,19 +18,12 @@ namespace LobbyMVC.KinopoiskDataService
             _httpClient = httpClient;
         }
 
-        public async Task<Film> GetFilmAttributes(string link)
+        public async Task<Film> GetFilmAttributes(string id)
         {
             var url = _httpClient.BaseAddress.ToString();
 
-            if (IsLink(link))
-            { 
-                url += GetFilmIdFromLink(link);
-            }
-            else
-            {
-                url += link;
-            }
-            
+            url += id;
+
             var response = await _httpClient.GetAsync(url);
 
             if (!response.IsSuccessStatusCode)
@@ -40,24 +34,6 @@ namespace LobbyMVC.KinopoiskDataService
         }
 
 
-        private bool IsLink(string link)
-        {
-            if(link.Length < LINKBASE.Length)
-            {
-                return false;
-            }
 
-            if(LINKBASE.Equals(link.Substring(0, LINKBASE.Length)))
-            {
-                return true;
-            }
-            return false;
-        }
-
-
-        private string GetFilmIdFromLink(string link)
-        {
-            return link.Substring(link.LastIndexOf('/', link.Length - 2) + 1);
-        }
     }
 }
