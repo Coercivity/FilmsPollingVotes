@@ -28,17 +28,10 @@ namespace Infrastructure
 
                 entity.Property(e => e.KinopoiskId).ValueGeneratedNever();
 
-                entity.Property(e => e.Genre)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
                 entity.Property(e => e.Link)
                     .HasMaxLength(200)
                     .IsUnicode(false);
 
-                entity.Property(e => e.Name)
-                    .HasMaxLength(100)
-                    .IsUnicode(false);
             });
 
             modelBuilder.Entity<Meeting>(entity =>

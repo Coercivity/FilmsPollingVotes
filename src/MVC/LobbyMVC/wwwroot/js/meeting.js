@@ -20,12 +20,39 @@ hubConnection.on("Send", function (data) {
     let firstElem = document.getElementById("chatroom").firstChild;
     document.getElementById("chatroom").insertBefore(elem, firstElem);
     document.getElementById("chatroom").insertBefore(img, firstElem);
-    
 
 });
 
+
+hubConnection.on("UpdateItems", function (data) {
+
+    let messageObject = JSON.parse(data);
+
+    console.log(messageObject);
+
+    for (var i = 0; i < messageObject.length; i++) {
+        let elem = document.createElement("p");
+        var img = document.createElement('img');
+
+        img.src = messageObject[i].Film.PosterUrl
+
+        elem.appendChild(document.createTextNode(messageObject[i].Film.Description));
+        let firstElem = document.getElementById("chatroom").firstChild;
+        document.getElementById("chatroom").insertBefore(elem, firstElem);
+        document.getElementById("chatroom").insertBefore(img, firstElem);
+
+    }
+
+
+
+});
+
+
+
+
 hubConnection.on("OnConnect", function (connectionId) {
     hubConnection.invoke("AddToGroup", getGroupName());
+    hubConnection.invoke("UpdateItems", getGroupName());
 });
 
 

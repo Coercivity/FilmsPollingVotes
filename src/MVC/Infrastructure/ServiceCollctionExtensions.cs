@@ -15,6 +15,7 @@ namespace Infrastructure
 
             services.AddTransient<IMeetingRepository, MeetingRepository>();
             services.AddTransient<IFilmRepository, FilmRepository>();
+            services.AddTransient<IUserRepository, UserRepository>();
 
 
 

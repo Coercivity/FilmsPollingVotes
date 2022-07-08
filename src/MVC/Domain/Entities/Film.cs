@@ -9,6 +9,8 @@ namespace Domain.Entities
         public string Description { get; set; }
         public string Year { get; set; }
         public string PosterUrl { get; set; }
+        public string NameRu { get; set; }
+        public string NameEn { get; set; }
         public float RatingKinopoisk { get; set; }
     }
 

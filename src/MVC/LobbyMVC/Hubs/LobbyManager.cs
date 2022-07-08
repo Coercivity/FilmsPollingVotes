@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LobbyMVC.Dtos;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -6,7 +7,16 @@ namespace LobbyMVC.Hubs
 {
     public class LobbyManager
     {
+
+        public Dictionary<string, List<SignalRMessageObjectDto>> HubCache { get; set; }
+
         public List<LobbyUser> Users { get; } = new();
+
+
+        public LobbyManager()
+        {
+            HubCache = new Dictionary<string, List<SignalRMessageObjectDto>>();
+        }
 
         public void ConnectUser(string userName, string connectionId)
         {
@@ -52,6 +62,9 @@ namespace LobbyMVC.Hubs
             userExists.RemoveConnection(connectionId);
             return false;
         }
+
+
+
 
 
         private LobbyUser? GetConnectedUserById(string connectionId) =>

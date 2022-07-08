@@ -7,7 +7,7 @@ namespace Domain.Entities
         public Guid Id { get; set; }
         public Guid LobbyId { get; set; }
         public Guid CreatorId { get; set; }
-        public string Name { get; set; }
+
         public string Genre { get; set; }
         public string Link { get; set; }
         public float Weight { get; set; }

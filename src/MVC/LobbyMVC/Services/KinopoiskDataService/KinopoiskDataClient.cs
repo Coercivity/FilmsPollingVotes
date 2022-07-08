@@ -1,19 +1,16 @@
 ﻿using Domain.Entities;
 using Microsoft.Extensions.Configuration;
-using System;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
 namespace LobbyMVC.KinopoiskDataService
 {
-    
+
 
     public class KinopoiskDataClient : IKinopoiskDataClient
     {
         private const string LINKBASE = "https://www.kinopoisk.ru/film/";
         private readonly HttpClient _httpClient;
-
 
         public KinopoiskDataClient(HttpClient httpClient, IConfiguration configuration)
         {
@@ -35,14 +32,11 @@ namespace LobbyMVC.KinopoiskDataService
             
             var response = await _httpClient.GetAsync(url);
 
-                if (!response.IsSuccessStatusCode)
+            if (!response.IsSuccessStatusCode)
             {
                 return null;
             }
-
             return response.Content.ReadAsAsync<Film>().Result;
-
-
         }
 
 
@@ -57,14 +51,13 @@ namespace LobbyMVC.KinopoiskDataService
             {
                 return true;
             }
-
             return false;
         }
 
 
         private string GetFilmIdFromLink(string link)
         {
-            return link.Substring(link.LastIndexOf('/', link.Length - 2));
+            return link.Substring(link.LastIndexOf('/', link.Length - 2) + 1);
         }
     }
 }
