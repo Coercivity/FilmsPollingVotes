@@ -14,7 +14,7 @@ hubConnection.on("Send", function (data) {
     let messageObject = JSON.parse(data);
 
     img.src = messageObject.Film.PosterUrl;
-
+    console.log(messageObject);
 
     elem.appendChild(document.createTextNode(messageObject.Film.Description));
     let firstElem = document.getElementById("chatroom").firstChild;

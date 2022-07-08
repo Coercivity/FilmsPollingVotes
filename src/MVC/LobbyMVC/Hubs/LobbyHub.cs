@@ -69,10 +69,15 @@ namespace LobbyMVC.Hubs
 
             var film = await _kinopoiskDataClient.GetFilmAttributes(message);
 
-            if(film is null)
+
+            if (film is null)
             {
                 return;
             }
+
+            film.LobbyId = Guid.Parse(groupId);
+            
+
 
             var userName = Context.User?.Identity?.Name ?? "Anonymous";
 
@@ -81,7 +86,7 @@ namespace LobbyMVC.Hubs
                 Film = film,
                 User = new User() { Name = userName}
             };
-
+            
 
             message = JsonSerializer.Serialize<SignalRMessageObjectDto>(messageObject);
 
@@ -91,14 +96,10 @@ namespace LobbyMVC.Hubs
         }
 
 
-
-
-
         public async Task AddToGroup(string groupName)
         {
             await Groups.AddToGroupAsync(Context.ConnectionId, groupName);
         }            
-
 
 
         public async Task RemoveFromGroup(string groupName)
