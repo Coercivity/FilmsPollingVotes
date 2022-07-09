@@ -43,10 +43,8 @@ namespace LobbyMVC.Controllers
             return Redirect("/");
         }
 
-        [HttpGet("register")]
-        public IActionResult Register(string returnUrl = "")
+        public IActionResult Register()
         {
-            ViewData["ReturnUrl"] = returnUrl;
             return View("Register");
         }
 

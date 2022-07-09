@@ -8,7 +8,7 @@
 <div>@Model.Name</div>
 <br />
 
-
+<h1>Текущие пользователи</h1>
 <div id="users">
 
 
@@ -16,24 +16,21 @@
 
 <form>
     <p>
-        <label>Получить список фильмов</label><br />
+        <label>Ссылка или id</label><br />
     </p>
 
     <div id="inputForm">
         <input type="text" id="message" />
-        <input type="button" id="sendBtn" value="Отправить" />
+        <input type="button" id="sendBtn" value="Добавить" />
     </div>
 </form>
 
 
 
 <div id="chatroom">
-
+    <div style="border-radius: 50%;" class="rounded-circle" width="150" height="150" id="imageSlot"></div>
 
 </div>
-
-
-
 
 
 @section Scripts{

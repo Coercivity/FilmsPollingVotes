@@ -1,12 +1,8 @@
-﻿using Application.Contracts;
-using Domain.Entities;
-using LobbyMVC.Controllers;
+﻿using Domain.Entities;
 using LobbyMVC.Dtos;
 using LobbyMVC.FilmPollingDataService;
-using LobbyMVC.Helpers;
 using LobbyMVC.KinopoiskDataService;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.SignalR;
 using System;
 using System.Collections.Generic;
@@ -124,7 +120,7 @@ namespace LobbyMVC.Hubs
             var message = JsonSerializer.Serialize<List<SignalRMessageObject>>(films);
             if (forEveryone)
             {
-                await Clients.Groups(groupId).SendAsync("UpdateItems", message);
+                await Clients.Groups(groupId).SendAsync("UpdateAllItems", message);
             }
             else
             {

@@ -11,20 +11,26 @@
 <form asp-controller="Authorization" asp-action="AuthroizeAsync">
     <div>
         <div>
-            <input asp-for="UserName" type="text"  />
+            <input asp-for="UserName" type="text"/>
 
         </div>
         <div>
-            <input asp-for="Password" type="password" />
+            <input asp-for="Password" type="password"/>
         </div>
         <div>
             <button class="btn btn-outline-success" type="submit">Log in</button>
         </div>
-
     </div>
 
 
 </form>
+
+<div>
+    <form asp-action="register" asp-controller="Authorization">
+        <button class="btn btn-outline-success" type="submit">Register</button>
+    </form>
+
+</div>
 
 
 
