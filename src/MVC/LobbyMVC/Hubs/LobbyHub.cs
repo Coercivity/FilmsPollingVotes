@@ -23,18 +23,15 @@ namespace LobbyMVC.Hubs
         private readonly LobbyManager _lobbyManager;
 
         private readonly IKinopoiskDataClient _kinopoiskDataClient;
-        private readonly IMeetingRepository _meetingRepository;
         private readonly IFilmPollingDataClient _filmPollingDataClient;
 
-        public LobbyHub(IKinopoiskDataClient kinopoiskDataClient, IMeetingRepository meetingRepository,
-                        IFilmPollingDataClient filmPollingDataClient, LobbyManager lobbyManager)
+        public LobbyHub(IKinopoiskDataClient kinopoiskDataClient, IFilmPollingDataClient filmPollingDataClient, 
+            LobbyManager lobbyManager)
         {
             _kinopoiskDataClient = kinopoiskDataClient;
-            _meetingRepository = meetingRepository;
             _filmPollingDataClient = filmPollingDataClient;         
             _lobbyManager = lobbyManager;
         }
-
 
 
         public override async Task OnConnectedAsync()
@@ -45,8 +42,8 @@ namespace LobbyMVC.Hubs
             _lobbyManager.ConnectUser(userName, connectionId);
 
             await base.OnConnectedAsync();
-        }
 
+        }
 
 
         public override async Task OnDisconnectedAsync(Exception exception)
@@ -58,7 +55,6 @@ namespace LobbyMVC.Hubs
 
             await base.OnDisconnectedAsync(exception);
         }
-
 
 
         private async Task<Film> GetFilmByUserInput(string message, string groupId)
@@ -78,19 +74,17 @@ namespace LobbyMVC.Hubs
         }
 
 
-
-
         public async Task AddItem(string message, string groupId)
         {
 
-            if(_lobbyManager.CheckIfKinopoiskIdExistsInGroup(message, groupId, out string id))
+            if(_lobbyManager.CheckIfKinopoiskIdExistsInGroup(message, groupId, out string filmId))
             {
                 //already exists
                 //need to implement pop up window with warning
                 return;
             }
 
-            var film = await GetFilmByUserInput(id, groupId);
+            var film = await GetFilmByUserInput(filmId, groupId);
 
             if(film is null)
             {
@@ -124,33 +118,41 @@ namespace LobbyMVC.Hubs
 
 
 
-        public async Task UpdateItems(string groupName)
+        public async Task UpdateItems(string groupId, bool forEveryone = false)
         {
-            var films = _lobbyManager.HubCache[groupName];
+            var films = _lobbyManager.HubCache[groupId];
             var message = JsonSerializer.Serialize<List<SignalRMessageObject>>(films);
-            await Clients.Caller.SendAsync("UpdateItems", message);
+            if (forEveryone)
+            {
+                await Clients.Groups(groupId).SendAsync("UpdateItems", message);
+            }
+            else
+            {
+                await Clients.Caller.SendAsync("UpdateItems", message);
+            }
         }
 
         public async Task RemoveItem(string itemId, string groupId)
         {
-            var itemToDelete = _lobbyManager.HubCache[groupId].Where(id => id.Equals(itemId)).FirstOrDefault();
+            var itemToDelete = _lobbyManager.HubCache[groupId].Where(x => x.Film.Id.Equals(Guid.Parse(itemId))).FirstOrDefault();
             _lobbyManager.HubCache[groupId].Remove(itemToDelete);
             await _filmPollingDataClient.RemoveFilmByIdAsync(Guid.Parse(itemId), Guid.Parse(groupId));
-            await UpdateItems(groupId);
+            await UpdateItems(groupId, true);
         }
 
-        public async Task AddToGroup(string groupName)
+        public async Task AddToGroup(string groupId)
         {
-            await Groups.AddToGroupAsync(Context.ConnectionId, groupName);
-            if (!_lobbyManager.HubCache.ContainsKey(groupName))
+            await Groups.AddToGroupAsync(Context.ConnectionId, groupId);
+            if (!_lobbyManager.HubCache.ContainsKey(groupId))
             {
-                _lobbyManager.HubCache.Add(groupName, new List<SignalRMessageObject>());
+                _lobbyManager.HubCache.Add(groupId, new List<SignalRMessageObject>());
             }
+            await Clients.Groups(groupId).SendAsync("AddUser", Context.User.Identity.Name);
         }            
 
-        public async Task RemoveFromGroup(string groupName)
+        public async Task RemoveFromGroup(string groupId)
         {
-            await Groups.RemoveFromGroupAsync(Context.ConnectionId, groupName);
+            await Groups.RemoveFromGroupAsync(Context.ConnectionId, groupId);
         }
 
     }

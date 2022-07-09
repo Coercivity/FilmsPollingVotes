@@ -38,8 +38,6 @@ namespace LobbyMVC.Controllers
 
 
 
-
-
         public async Task<IActionResult> CreateLobby(string lobbyName)
         {   
 
@@ -60,52 +58,6 @@ namespace LobbyMVC.Controllers
             return RedirectToAction(nameof(Index), new { id = meeting.Id });
         }
 
-
-        public async Task<IActionResult> GetFilmListAsync()
-        {
-            var lobbyId = Guid.Parse("3fa85f64-5717-4562-b3fc-2c963f66afa6");
-            var filmId = Guid.Parse("3fa85f64-5717-4566-b3fc-2c963f66afa6");
-
-
-            var films = await _filmPollingDataClient.GetFilmsByLobbyIdAsync(lobbyId);
-
-            var winner = await _filmPollingDataClient.GetWinnerByLobbyIdAsync(lobbyId);
-
-            await _filmPollingDataClient.RemoveFilmByIdAsync(filmId, lobbyId);
-
-            if(films is null)
-            {
-                return NotFound();
-            }
-
-            return View("index", films);
-
-        }
-
-        public async Task<ActionResult> AddFilmAsync(string link)
-        {
-            var film = await _kinopoiskDataClient.GetFilmAttributes(link);
-
-            var lobbyId = Guid.Parse("3fa85f64-5717-4562-b3fc-2c963f66afa1");
-
-            var creatorId = Guid.Parse("3fa85f64-5717-4562-b3fc-2c963f66afa2");
-
-            var filmId = Guid.Parse("3fa85f64-5717-4562-b3fc-2c963f66afa3");
-
-
-
-
-            var filmToSend = new PollingModel() { 
-                CreatorId = creatorId,
-                EntityId = filmId,
-                MeetingId = lobbyId,
-                CreatorWeight = 1
-            };
-
-            await _filmPollingDataClient.AddFilmAsync(filmToSend);
-
-            return View("index", film);
-        }
 
 
     }
