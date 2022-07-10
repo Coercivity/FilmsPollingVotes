@@ -1,6 +1,4 @@
-﻿using Domain.Entities;
-using LobbyMVC.Dtos;
-using System.Collections.Generic;
+﻿using LobbyMVC.Dtos;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -10,6 +8,15 @@ namespace LobbyMVC.Services.IdentityService
     {
         Task<ClaimsPrincipal> AuthorizeUserAsync(AuthentificateUserDto authentificateUserDto);
 
-        Task RegisterUserAsync(RegisterUserDto user);
+        Task<RegistrationStatus> RegisterUserAsync(RegisterUserDto user);
     }
+
+    public enum RegistrationStatus
+    {
+        Success = 1,
+        AccountExists,
+        Error
+    }
+
+
 }

@@ -2,6 +2,15 @@
 
 <h1>Registration</h1>
 
+@{
+    var exists = ViewData["accountExists"] as string;
+    if(exists is not null)
+    {
+        <h1>@exists</h1>
+    }
+
+}
+
 
 
 <form asp-controller="Authorization" asp-action="RegisterAsync">

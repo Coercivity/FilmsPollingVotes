@@ -40,7 +40,7 @@ namespace LobbyMVC.Controllers
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync();
-            return Redirect("/");
+            return Redirect("/login");
         }
 
         public IActionResult Register()
@@ -51,9 +51,17 @@ namespace LobbyMVC.Controllers
 
         public async Task<IActionResult> RegisterAsync(RegisterUserDto registerUserDto)
         {
-            await _identityService.RegisterUserAsync(registerUserDto);
+            var registrationStatus = await _identityService.RegisterUserAsync(registerUserDto);
+
+            if (registrationStatus == RegistrationStatus.AccountExists)
+            {
+                ViewData["accountExists"] = "Аккаунт с таким именем уже зарегистрирован";
+                return View("Register");
+            }
 
             return Redirect("/");
+
+
         }
     }
 }

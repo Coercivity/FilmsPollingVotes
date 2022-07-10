@@ -88,7 +88,7 @@ namespace LobbyMVC.Services.IdentityService
             return GetTokenClaims(response.Content.ReadAsAsync<string>().Result);
         }
 
-        public async Task RegisterUserAsync(RegisterUserDto user)
+        public async Task<RegistrationStatus> RegisterUserAsync(RegisterUserDto user)
         {
 
             var url = _httpClient.BaseAddress + _registerSuffix;
@@ -100,8 +100,10 @@ namespace LobbyMVC.Services.IdentityService
 
             var response = await _httpClient.PostAsync(url, httpContent);
 
-
             response.EnsureSuccessStatusCode();
+
+            return response.Content.ReadAsAsync<RegistrationStatus>().Result;
+
         }
     }
 }
