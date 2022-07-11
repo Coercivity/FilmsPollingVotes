@@ -1,7 +1,6 @@
 ﻿using Domain.Entities;
 using LobbyMVC.Dtos;
 using LobbyMVC.FilmPollingDataService;
-using LobbyMVC.KinopoiskDataService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using System;
@@ -18,13 +17,11 @@ namespace LobbyMVC.Hubs
 
         private readonly LobbyManager _lobbyManager;
 
-        private readonly IKinopoiskDataClient _kinopoiskDataClient;
         private readonly IFilmPollingDataClient _filmPollingDataClient;
 
-        public LobbyHub(IKinopoiskDataClient kinopoiskDataClient, IFilmPollingDataClient filmPollingDataClient, 
+        public LobbyHub(IFilmPollingDataClient filmPollingDataClient, 
             LobbyManager lobbyManager)
         {
-            _kinopoiskDataClient = kinopoiskDataClient;
             _filmPollingDataClient = filmPollingDataClient;         
             _lobbyManager = lobbyManager;
         }
@@ -36,9 +33,8 @@ namespace LobbyMVC.Hubs
             var connectionId = Context.ConnectionId;
             await Clients.Client(connectionId).SendAsync("OnConnect", connectionId);
             _lobbyManager.ConnectUser(userName, connectionId);
-
+            
             await base.OnConnectedAsync();
-
         }
 
 
@@ -53,23 +49,6 @@ namespace LobbyMVC.Hubs
         }
 
 
-        private async Task<Film> GetFilmByUserInput(string message, string groupId)
-        {
-            var film = await _kinopoiskDataClient.GetFilmAttributes(message);
-
-            if (film is null)
-            {
-                return null;
-            }
-
-            film.LobbyId = Guid.Parse(groupId);
-            film.CreatorId = Guid.Parse(Context.User.FindFirst("Id").Value);
-            film.Id = Guid.NewGuid();
-
-            return film;
-        }
-
-
         public async Task AddItem(string message, string groupId)
         {
 
@@ -80,12 +59,15 @@ namespace LobbyMVC.Hubs
                 return;
             }
 
-            var film = await GetFilmByUserInput(filmId, groupId);
+            var userId = Context.User.FindFirst("Id").Value;
+
+            var film = await _lobbyManager.GetFilmByUserInput(filmId, groupId, userId);
 
             if(film is null)
             {
                 return;
             }
+
 
             var pollingModel = new PollingModel()
             { 
@@ -103,14 +85,16 @@ namespace LobbyMVC.Hubs
                 User = new User()
                 {
                     Name = Context.User?.Identity?.Name ?? "Anonymous",
-                    Id = film.CreatorId,
+                    Id = Guid.Parse(userId),
                     CreatorWeight = 1
                 }
             };
+
             _lobbyManager.HubCache[groupId].Add(messageObject);
             message = JsonSerializer.Serialize<SignalRMessageObject>(messageObject);
             await Clients.Groups(groupId).SendAsync("AddItem", message);
         }
+
 
 
 
@@ -124,9 +108,11 @@ namespace LobbyMVC.Hubs
             }
             else
             {
-                await Clients.Caller.SendAsync("UpdateItems", message);
+                await Clients.Caller.SendAsync("UpdateItemsForNewConnection", message);
             }
         }
+
+
 
         public async Task RemoveItem(string itemId, string groupId)
         {
@@ -135,6 +121,8 @@ namespace LobbyMVC.Hubs
             await _filmPollingDataClient.RemoveFilmByIdAsync(Guid.Parse(itemId), Guid.Parse(groupId));
             await UpdateItems(groupId, true);
         }
+
+
 
         public async Task AddToGroup(string groupId)
         {
@@ -145,6 +133,18 @@ namespace LobbyMVC.Hubs
             }
             await Clients.Groups(groupId).SendAsync("AddUser", Context.User.Identity.Name);
         }            
+
+
+        public async Task GetLobbyWinner(string groupId)
+        {
+            var winnerId = await _filmPollingDataClient.GetWinnerByLobbyIdAsync(Guid.Parse(groupId));
+            var lobbyFilms = await _filmPollingDataClient.GetFilmsByLobbyIdAsync(Guid.Parse(groupId));
+
+            var winner = _lobbyManager.HubCache[groupId].Where(x => x.Film.Id.Equals(winnerId)).FirstOrDefault();
+            var serializedWinner = JsonSerializer.Serialize<SignalRMessageObject>(winner);
+            await Clients.Groups(groupId).SendAsync("PresentWinner", serializedWinner, lobbyFilms);
+        }
+
 
         public async Task RemoveFromGroup(string groupId)
         {

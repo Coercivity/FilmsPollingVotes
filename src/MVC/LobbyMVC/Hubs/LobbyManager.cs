@@ -1,16 +1,26 @@
-﻿using LobbyMVC.Dtos;
+﻿using Domain.Entities;
+using LobbyMVC.Dtos;
 using LobbyMVC.Helpers;
+using LobbyMVC.KinopoiskDataService;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace LobbyMVC.Hubs
 {
     public class LobbyManager
     {
+        private readonly IKinopoiskDataClient _kinopoiskDataClient;
+
         public Dictionary<string, List<SignalRMessageObject>> HubCache { get; set; } = new();
 
         public List<LobbyUser> Users { get; } = new();
+
+        public LobbyManager(IKinopoiskDataClient kinopoiskDataClient)
+        {
+            _kinopoiskDataClient = kinopoiskDataClient;
+        }
 
         public void ConnectUser(string userName, string connectionId)
         {
@@ -55,6 +65,23 @@ namespace LobbyMVC.Hubs
 
             userExists.RemoveConnection(connectionId);
             return false;
+        }
+
+
+        public async Task<Film> GetFilmByUserInput(string message, string groupId, string userId)
+        {
+            var film = await _kinopoiskDataClient.GetFilmAttributes(message);
+
+            if (film is null)
+            {
+                return null;
+            }
+
+            film.LobbyId = Guid.Parse(groupId);
+            film.CreatorId = Guid.Parse(userId);
+            film.Id = Guid.NewGuid();
+
+            return film;
         }
 
 
