@@ -1,0 +1,31 @@
+version: "3.9"
+services:
+
+  polling-api:
+    build: ../services/polling/
+    expose:
+      - "80"
+    ports:
+      - "8085:80"
+    extra_hosts:
+      - "CESARDLSURFBOOK:10.0.75.1"
+
+  identity-api:
+    build: ../services/identity/identityservice/
+    expose:
+      - "80"
+    ports:
+      - "8086:80"
+    extra_hosts:
+      - "CESARDLSURFBOOK:10.0.75.1"
+
+  web-mvc:
+    build: ../mvc/
+    expose:
+      - "80"
+    ports:
+       - "8087:80"
+    extra_hosts:
+       - "CESARDLSURFBOOK:10.0.75.1"
+
+
