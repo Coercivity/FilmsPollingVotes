@@ -1,0 +1,52 @@
+﻿using LobbyService.FilmPollingDataService;
+using LobbyService.KinopoiskDataService;
+using LobbyService.Services.IdentityService;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Net.Http.Headers;
+
+namespace LobbyService.Extensions
+{
+    public static class HttpClientServiceCollectionExtensions
+    {
+        public static IServiceCollection AddHttpClients(this IServiceCollection services, IConfiguration configuration)
+        {
+
+            services.AddHttpClient<IKinopoiskDataClient, KinopoiskDataClient>(client => 
+            { 
+                client.BaseAddress = new Uri(configuration.GetSection("KinopoiskAPISettings:url").Value);
+
+                client.DefaultRequestHeaders.Add("X-API-KEY", configuration.GetSection("KinopoiskAPISettings:urlParameters").Value);
+                client.DefaultRequestHeaders.Add("Bearer", configuration.GetSection("KinopoiskAPISettings:token").Value);
+                client.DefaultRequestHeaders.Accept
+                         .Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+            });
+
+
+
+            services.AddHttpClient<IFilmPollingDataClient, FilmPollingDataClient>(client =>
+            {
+                client.BaseAddress = new Uri(configuration.GetSection("FilmPollingAPISettings:url").Value);
+
+                client.DefaultRequestHeaders.Accept
+                         .Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+            });
+
+
+            services.AddHttpClient<IJWTIdentityService, IdentityService>(client => {
+
+                client.BaseAddress = new Uri(configuration.GetSection("IdentityAPISettings:url").Value);
+                
+                client.DefaultRequestHeaders.Accept
+                         .Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+            });
+
+
+            return services;
+        }
+    }
+}
